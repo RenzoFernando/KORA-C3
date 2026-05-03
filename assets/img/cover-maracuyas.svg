@@ -1,0 +1,30 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 600" role="img" aria-label="Tierra Sonora de Maracuyas">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#f97316"/>
+      <stop offset="100%" stop-color="#22c55e"/>
+    </linearGradient>
+    <linearGradient id="glass" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#ffffff" stop-opacity="0.22"/>
+      <stop offset="100%" stop-color="#ffffff" stop-opacity="0.02"/>
+    </linearGradient>
+  </defs>
+  <rect width="600" height="600" rx="56" fill="#09070d"/>
+  <rect x="22" y="22" width="556" height="556" rx="42" fill="url(#bg)"/>
+  <circle cx="116" cy="112" r="92" fill="#ffffff" fill-opacity="0.08"/>
+  <circle cx="468" cy="134" r="62" fill="#ffffff" fill-opacity="0.10"/>
+  <circle cx="480" cy="454" r="122" fill="#ffffff" fill-opacity="0.08"/>
+  <path d="M72 382c70-64 148-96 236-96 72 0 134 16 188 48" fill="none" stroke="#ffffff" stroke-opacity="0.16" stroke-width="14" stroke-linecap="round"/>
+  <path d="M84 442c86-44 170-66 254-66 88 0 152 16 192 48" fill="none" stroke="#ffffff" stroke-opacity="0.12" stroke-width="10" stroke-linecap="round"/>
+  <rect x="48" y="48" width="504" height="504" rx="34" fill="url(#glass)" stroke="#ffffff" stroke-opacity="0.16"/>
+  <circle cx="434" cy="220" r="88" fill="#0f0d15" fill-opacity="0.24"/>
+  <circle cx="434" cy="220" r="62" fill="#0f0d15" fill-opacity="0.28" stroke="#ffffff" stroke-opacity="0.18"/>
+  <circle cx="434" cy="220" r="14" fill="#ffffff" fill-opacity="0.5"/>
+  <rect x="74" y="84" width="112" height="28" rx="14" fill="#0f0d15" fill-opacity="0.32"/>
+  <text x="130" y="103" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="13" font-weight="700" letter-spacing="1.8" fill="#ffffff">KORA CAPSULA</text>
+  <text x="72" y="372" font-family="Arial, Helvetica, sans-serif" font-size="58" font-weight="700" fill="#ffffff">Tierra Sonora</text>
+  <text x="74" y="424" font-family="Arial, Helvetica, sans-serif" font-size="24" font-weight="600" fill="#ffffff" fill-opacity="0.9">Maracuyas</text>
+  <text x="74" y="458" font-family="Arial, Helvetica, sans-serif" font-size="18" fill="#0f0d15" fill-opacity="0.78">Indie folclorico</text>
+  <rect x="74" y="486" width="132" height="30" rx="15" fill="#0f0d15" fill-opacity="0.28"/>
+  <text x="140" y="507" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="14" font-weight="700" letter-spacing="1.4" fill="#ffffff">30 SEG</text>
+</svg>
