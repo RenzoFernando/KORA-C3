@@ -8,7 +8,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700;800&family=Syne:wght@600;700;800&display=swap" rel="stylesheet">
-  <script>try{const raw=localStorage.getItem('kora-corte3-state');const state=raw?JSON.parse(raw):null;document.documentElement.dataset.theme=state?.theme==='light'?'light':'dark'}catch(error){document.documentElement.dataset.theme='dark'}</script>
+  <script>try{const raw=localStorage.getItem('kora-corte3-state');const state=raw?JSON.parse(raw):null;document.documentElement.dataset.theme=state?.theme==='dark'?'dark':'light'}catch(error){document.documentElement.dataset.theme='light'}</script>
   <link rel="stylesheet" href="assets/css/styles.css">
 </head>
 <body>
@@ -24,7 +24,7 @@
       </button>
       <nav class="nav-list">
         <button class="nav-item is-active" type="button" data-view-target="discover">Descubrir</button>
-        <button class="nav-item" type="button" data-view-target="player">Player 30s</button>
+        <button class="nav-item" type="button" data-view-target="player">Player</button>
         <button class="nav-item" type="button" data-view-target="interaction">Interacción</button>
         <button class="nav-item role-only" type="button" data-view-target="publish" data-role-nav="artist">Publicar música</button>
         <button class="nav-item" type="button" data-view-target="billing">Pagos y facturación</button>
@@ -58,10 +58,10 @@
     <div class="workspace">
       <header class="topbar">
         <button class="icon-button" type="button" data-mobile-menu aria-label="Abrir menú">☰</button>
-        <a class="mobile-brand" href="index.html"><img src="assets/img/logo.svg" alt="KORA"></a>
+        <a class="mobile-brand app-mark" href="index.html" aria-label="Ir al inicio"><img src="assets/img/icono.svg" alt="KORA"></a>
         <div class="topbar-actions">
-          <button class="top-icon" type="button" data-open-notifications aria-label="Notificaciones" title="Notificaciones">🔔</button>
-          <button class="top-icon" type="button" data-open-settings aria-label="Ajustes" title="Ajustes">⚙</button>
+          <button class="top-icon" type="button" data-open-notifications aria-label="Notificaciones" title="Notificaciones"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 22a2.6 2.6 0 0 0 2.45-1.75h-4.9A2.6 2.6 0 0 0 12 22Zm7-5-1.7-2.15V10a5.32 5.32 0 0 0-4-5.15V4a1.3 1.3 0 1 0-2.6 0v.85a5.32 5.32 0 0 0-4 5.15v4.85L5 17v1.2h14V17Z" fill="currentColor"/></svg></button>
+          <button class="top-icon" type="button" data-open-settings aria-label="Ajustes" title="Ajustes"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M19.43 12.98c.04-.32.07-.65.07-.98s-.02-.66-.07-.98l2.1-1.64-2-3.46-2.47 1a7.52 7.52 0 0 0-1.7-.98L15 3.3h-4l-.36 2.64c-.61.24-1.18.57-1.7.98l-2.47-1-2 3.46 2.1 1.64c-.04.32-.07.65-.07.98s.02.66.07.98l-2.1 1.64 2 3.46 2.47-1c.52.41 1.09.74 1.7.98L11 20.7h4l.36-2.64c.61-.24 1.18-.57 1.7-.98l2.47 1 2-3.46-2.1-1.64ZM13 15.46a3.5 3.5 0 1 1 0-7 3.5 3.5 0 0 1 0 7Z" fill="currentColor"/></svg></button>
           <button class="soft-button" type="button" data-theme-toggle>Modo claro</button>
           <button class="soft-button" type="button" data-reset-state>Reiniciar</button>
           <button class="primary-button" type="button" data-go-login>Cambiar perfil</button>
@@ -78,7 +78,11 @@
             </div>
             <button class="soft-button" type="button" data-next-artist>Siguiente cápsula</button>
           </div>
-          <div class="capsule-grid" data-capsule-grid></div>
+          <div class="capsule-carousel" aria-label="Carrusel de cápsulas locales">
+                <button class="carousel-button" type="button" data-capsule-prev aria-label="Ver cápsulas anteriores">‹</button>
+                <div class="capsule-grid" data-capsule-grid></div>
+                <button class="carousel-button" type="button" data-capsule-next aria-label="Ver más cápsulas">›</button>
+              </div>
           <div class="two-column">
             <article class="panel-card">
               <div class="panel-head"><div><p class="eyebrow">Memoria musical</p><h2>Tablero de hallazgos</h2></div><span class="counter-pill" data-saved-count>0</span></div>
@@ -101,7 +105,7 @@
             </div>
             <div class="control-row">
               <button class="icon-button big" type="button" data-prev-artist aria-label="Anterior">‹</button>
-              <button class="primary-button wide" type="button" data-toggle-play>Reproducir</button>
+              <button class="primary-button play-toggle" type="button" data-toggle-play aria-label="Reproducir"></button>
               <button class="icon-button big" type="button" data-next-artist aria-label="Siguiente">›</button>
             </div>
             <div class="action-row">
@@ -155,8 +159,8 @@
               <label>Nombre artístico<input name="artist" type="text" required placeholder="Ej: Valentina Cruz"></label>
               <label>Género o escena<input name="genre" type="text" required placeholder="R&B afrolatino, rap local, fusión pacífico"></label>
               <label>Barrio o zona<input name="neighborhood" type="text" required placeholder="San Antonio, Siloé, Alameda"></label>
-              <label>Archivo de audio<input name="audio" type="file" accept="audio/*"></label>
-              <label>Imagen o portada<input name="cover" type="file" accept="image/*"></label>
+              <label class="file-picker"><span>Archivo de audio</span><input name="audio" type="file" accept="audio/*"><strong data-file-label="audio">Seleccionar audio</strong><small>WAV, MP3 o M4A para la cápsula.</small></label>
+              <label class="file-picker"><span>Imagen o portada</span><input name="cover" type="file" accept="image/*"><strong data-file-label="cover">Seleccionar portada</strong><small>SVG, PNG o JPG con estética de lanzamiento.</small></label>
               <label>Contexto cultural<textarea name="story" required placeholder="Cuenta la historia breve del lanzamiento, escena, idioma y por qué importa localmente."></textarea></label>
               <label class="check-row"><input name="license" type="checkbox" required><span>Otorgo a KORA una licencia no exclusiva para reproducir, comunicar y distribuir esta cápsula dentro de la plataforma, conservando mis derechos morales.</span></label>
               <label class="check-row"><input name="visibility" type="checkbox"><span>Autorizo que empresas CM suscriptoras vean métricas agregadas y señales de engagement de este lanzamiento.</span></label>

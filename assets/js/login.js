@@ -26,7 +26,7 @@ function loadState() {
 
 function saveProfile(profile) {
   const previous = loadState();
-  const next = { ...previous, profileId: profile.id, accountHidden: false, theme: previous.theme || 'dark' };
+  const next = { ...previous, profileId: profile.id, accountHidden: false, theme: previous.theme || 'light' };
   localStorage.setItem(STORAGE_KEY, JSON.stringify(next));
   toast(`Entrando como ${profile.name}.`);
   setTimeout(() => { window.location.href = 'index.html'; }, 420);
@@ -50,7 +50,7 @@ function avatarMarkup(profile) {
 }
 
 function profileCard(profile) {
-  return `<button class="login-card" type="button" data-profile-id="${escapeHtml(profile.id)}"><div class="list-item">${avatarMarkup(profile)}<span class="list-item-content"><strong>${escapeHtml(profile.name)}</strong><span>${escapeHtml(profile.roleLabel)} · ${escapeHtml(profile.city || 'Cali')}</span></span></div><p>${escapeHtml(profile.bio || 'Perfil de prueba para KORA.')}</p></button>`;
+  return `<button class="login-card" type="button" data-profile-id="${escapeHtml(profile.id)}"><div class="list-item">${avatarMarkup(profile)}<span class="list-item-content"><strong>${escapeHtml(profile.name)}</strong><span>${escapeHtml(profile.roleLabel)} · ${escapeHtml(profile.city || 'Cali')}</span></span></div><p>${escapeHtml(profile.bio || 'Perfil disponible para KORA.')}</p></button>`;
 }
 
 function renderProfiles() {
@@ -64,6 +64,8 @@ function renderProfiles() {
 function roleLabel(role) {
   if (role === 'artist') return 'Artista local';
   if (role === 'company') return 'Scout discográfica';
+  if (role === 'ambassador') return 'Embajador cultural';
+  if (role === 'curator') return 'Oyente curador';
   return 'Explorador musical';
 }
 
@@ -79,7 +81,7 @@ function createProfileFromForm(form) {
     roleLabel: roleLabel(role),
     city: 'Cali',
     initial: name.trim().slice(0, 1).toUpperCase(),
-    bio: role === 'artist' ? 'Cuenta creada para publicar música y revisar licencias.' : role === 'company' ? 'Cuenta creada para scouting y analítica autorizada.' : 'Cuenta creada para descubrir, guardar y compartir artistas locales.'
+    bio: role === 'artist' ? 'Cuenta creada para publicar música y revisar licencias.' : role === 'company' ? 'Cuenta creada para scouting y analítica autorizada.' : role === 'ambassador' ? 'Cuenta creada para curaduría comunitaria, tableros y embajada cultural.' : role === 'curator' ? 'Cuenta creada para lectura crítica, tableros y contexto musical.' : 'Cuenta creada para descubrir, guardar y compartir artistas locales.'
   };
   const profiles = createdProfiles();
   profiles.push(profile);

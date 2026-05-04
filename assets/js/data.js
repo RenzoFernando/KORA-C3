@@ -1,13 +1,13 @@
 window.KORA_DATA = {
   teamMembers: [
-    { id: 'johan', name: 'Johan Guzman', code: 'A00401480', role: 'user', roleLabel: 'Oyente curador', city: 'Cali', initial: 'J', avatar: 'assets/img/johan-stiven-guzman.svg', bio: 'Explorador de escenas urbanas y cápsulas de alto contexto.' },
+    { id: 'johan', name: 'Johan Guzman', code: 'A00401480', role: 'curator', roleLabel: 'Oyente curador', city: 'Cali', initial: 'J', avatar: 'assets/img/johan-stiven-guzman.svg', bio: 'Explorador de escenas urbanas y cápsulas de alto contexto.' },
     { id: 'karold', name: 'Karold Mejia', code: 'A00401806', role: 'artist', roleLabel: 'Artista local', city: 'Cali', initial: 'K', avatar: 'assets/img/karold-lizeth-mejia-orozco.svg', bio: 'Perfil artista para publicar lanzamientos, asociar visuales y revisar licencias.' },
     { id: 'luna', name: 'Luna Martinez', code: 'A00401964', role: 'user', roleLabel: 'Oyente exploradora', city: 'Cali', initial: 'L', avatar: 'assets/img/luna-catalina-martinez.svg', bio: 'Curadora de hallazgos digitales y playlists locales.' },
     { id: 'renzo', name: 'Renzo Mosquera', code: 'A00401681', role: 'company', roleLabel: 'Scout discográfica', city: 'Cali', initial: 'R', avatar: 'assets/img/renzo-mosquera-daza.svg', bio: 'Gestión comercial, analítica autorizada y scouting de artistas locales.' }
   ],
   roleProfiles: [
     { id: 'scout-role', name: 'Agencia Brújula', role: 'company', roleLabel: 'Scout discográfica', city: 'Cali', initial: 'A', avatar: 'assets/img/agencia-brujula.svg', bio: 'Perfil empresarial para scouting, campañas y facturación con datos autorizados.' },
-    { id: 'ambassador-role', name: 'Laura Pérez', role: 'user', roleLabel: 'Embajadora cultural', city: 'Cali', initial: 'L', avatar: 'assets/img/laura-perez.svg', bio: 'Perfil de curaduría comunitaria, tableros y aporte a playlists locales.' },
+    { id: 'ambassador-role', name: 'Laura Pérez', role: 'ambassador', roleLabel: 'Embajadora cultural', city: 'Cali', initial: 'L', avatar: 'assets/img/laura-perez.svg', bio: 'Perfil de curaduría comunitaria, tableros y aporte a playlists locales.' },
     { id: 'listener-role', name: 'Mateo Rivas', role: 'user', roleLabel: 'Explorador musical', city: 'Cali', initial: 'M', avatar: 'assets/img/mateo-rivas.svg', bio: 'Perfil estándar para descubrir, guardar y compartir contenido.' },
     { id: 'artist-role', name: 'Sara León', role: 'artist', roleLabel: 'Artista local', city: 'Cali', initial: 'S', avatar: 'assets/img/sara-leon.svg', bio: 'Perfil con publicación de canciones, contenido visual, licencia de uso y métricas.' }
   ],
@@ -47,6 +47,25 @@ window.KORA_DATA = {
       story: 'Soul con guitarras limpias y narrativa de trayectos cotidianos, mercado y madrugadas creativas.',
       tags: ['Alameda', 'Soul', 'Guitarra limpia', 'Madrugada'],
       insight: ['Buena entrada vocal en menos de 8 segundos.', 'Funciona para usuarios de descubrimiento tranquilo.', 'Puede generar guardados por historia cercana.']
+
+    },
+    {
+      id: 'aurora-ladera', name: 'Naya del Valle', track: 'Aurora de Ladera', genre: 'Neo soul caleño', city: 'Cali', neighborhood: 'Terrón Colorado', scene: 'Soul local', language: 'Español', match: 89, duration: 142, preview: 30, symbol: '✺', tone: 'teal', cover: 'assets/img/cover-aurora-ladera.svg', avatar: 'assets/img/laura-perez.svg', audio: 'assets/audio/aurora-de-ladera.wav',
+      story: 'Voces suaves, bajo redondo y una historia sobre mirar la ciudad desde la ladera antes de empezar el día.',
+      tags: ['Terrón Colorado', 'Neo soul', 'Ladera', 'Voz íntima'],
+      insight: ['Entrada vocal directa y cálida.', 'Conecta con usuarios que guardan R&B y soul.', 'Aporta representación de ladera al feed digital.']
+    },
+    {
+      id: 'medianoche-alameda', name: 'Cromo Pacífico', track: 'Medianoche Alameda', genre: 'House latino', city: 'Cali', neighborhood: 'Alameda', scene: 'Electro afro', language: 'Instrumental', match: 84, duration: 160, preview: 30, symbol: '◇', tone: 'indigo', cover: 'assets/img/cover-medianoche-alameda.svg', avatar: 'assets/img/angela-quitiaquez.svg', audio: 'assets/audio/medianoche-alameda.wav',
+      story: 'Percusión filtrada, sintetizadores nocturnos y una lectura sonora del mercado, las luces y los recorridos por Alameda.',
+      tags: ['Alameda', 'House', 'Nocturno', 'Percusión'],
+      insight: ['Ideal para cápsulas visuales con movimiento.', 'Buena opción para playlists de noche.', 'Su contexto funciona antes del drop.']
+    },
+    {
+      id: 'brisa-oriente', name: 'Lía Montoya', track: 'Brisa del Oriente', genre: 'Pop urbano', city: 'Cali', neighborhood: 'Ciudad Córdoba', scene: 'Pop de barrio', language: 'Español', match: 87, duration: 136, preview: 30, symbol: '✧', tone: 'rose', cover: 'assets/img/cover-brisa-oriente.svg', avatar: 'assets/img/luna-catalina-martinez.svg', audio: 'assets/audio/brisa-del-oriente.wav',
+      story: 'Melodía pegajosa, percusión ligera y una cápsula sobre amistad, buses, colegio y tardes al oriente de Cali.',
+      tags: ['Ciudad Córdoba', 'Pop urbano', 'Hook rápido', 'Oriente'],
+      insight: ['Coro memorable antes del segundo 15.', 'Probabilidad alta de compartir con amigos.', 'Suma diversidad territorial al descubrimiento.']
     }
   ],
   interactions: [
@@ -61,9 +80,21 @@ window.KORA_DATA = {
     { name: 'Karold', action: 'publicó una cápsula', detail: 'Nuevo adelanto visible para la comunidad.' }
   ],
   notifications: [
-    { title: 'Nueva cápsula en San Antonio', body: 'Valentina Cruz tiene una actualización de lanzamiento.' },
-    { title: 'Tu playlist local creció', body: 'La comunidad sumó nuevos aportes esta semana.' },
-    { title: 'Autorizaciones al día', body: 'Tu configuración de datos está activa por rol.' }
+    { id: 'notif-launch-san-antonio', title: 'Nueva cápsula en San Antonio', body: 'Valentina Cruz tiene una actualización de lanzamiento.' },
+    { id: 'notif-playlist-grow', title: 'Tu playlist local creció', body: 'La comunidad sumó nuevos aportes esta semana.' },
+    { id: 'notif-data-ready', title: 'Autorizaciones al día', body: 'Tu configuración de datos está activa por rol.' }
+  ],
+  friends: [
+    { name: 'Johan', affinity: 'Rap y contexto urbano' },
+    { name: 'Karold', affinity: 'Lanzamientos y métricas' },
+    { name: 'Luna', affinity: 'Playlists y tableros' },
+    { name: 'Renzo', affinity: 'Scouting y radar' }
+  ],
+
+  playlists: [
+    { id: 'cali-nocturna', name: 'Cali nocturna', curator: 'Luna Martinez', cover: 'assets/img/cover-medianoche-alameda.svg', tracks: ['valentina-cruz', 'duo-cables', 'medianoche-alameda'], mood: 'R&B, electrónica suave y ciudad de noche' },
+    { id: 'barrio-y-ladera', name: 'Barrio y ladera', curator: 'Johan Guzman', cover: 'assets/img/cover-aurora-ladera.svg', tracks: ['maelo-solar', 'santa-loma', 'aurora-ladera'], mood: 'Rap, raíz y relatos territoriales' },
+    { id: 'pop-local', name: 'Pop local emergente', curator: 'Laura Pérez', cover: 'assets/img/cover-brisa-oriente.svg', tracks: ['nina-santacruz', 'brisa-oriente'], mood: 'Hooks rápidos para compartir' }
   ],
   settings: [
     { title: 'Tu cuenta', body: 'Perfil, correo, privacidad y baja de cuenta.' },

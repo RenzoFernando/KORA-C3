@@ -8,7 +8,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700;800&family=Syne:wght@600;700;800&display=swap" rel="stylesheet">
-  <script>try{const raw=localStorage.getItem('kora-corte3-state');const state=raw?JSON.parse(raw):null;document.documentElement.dataset.theme=state?.theme==='light'?'light':'dark'}catch(error){document.documentElement.dataset.theme='dark'}</script>
+  <script>try{const raw=localStorage.getItem('kora-corte3-state');const state=raw?JSON.parse(raw):null;document.documentElement.dataset.theme=state?.theme==='dark'?'dark':'light'}catch(error){document.documentElement.dataset.theme='light'}</script>
   <link rel="stylesheet" href="assets/css/styles.css">
 </head>
 <body class="login-body">
@@ -22,8 +22,8 @@
       <img src="assets/img/logo.svg" alt="KORA">
     </section>
 
-    <section class="login-panel auth-grid">
-      <div class="panel-card">
+    <section class="login-panel auth-panel">
+      <div class="auth-card-main">
         <div class="panel-head"><div><p class="eyebrow">Login</p><h2>Acceso normal</h2></div><a class="soft-button" href="index.html">Abrir app</a></div>
         <div class="auth-tabs">
           <button class="auth-tab is-active" type="button" data-auth-tab="signin">Iniciar sesión</button>
@@ -38,15 +38,16 @@
         <form class="auth-form" data-auth-form="signup">
           <label>Nombre<input name="name" type="text" required placeholder="Tu nombre"></label>
           <label>Correo<input name="email" type="email" required placeholder="correo@dominio.com"></label>
-          <label>Rol<select name="role"><option value="user">Explorador musical</option><option value="artist">Artista local</option><option value="company">Scout discográfica</option></select></label>
+          <label>Rol<select name="role"><option value="user">Explorador musical</option><option value="curator">Oyente curador</option><option value="ambassador">Embajador cultural</option><option value="artist">Artista local</option><option value="company">Scout discográfica</option></select></label>
           <label>Contraseña<input name="password" type="password" required placeholder="Crear contraseña"></label>
           <button class="primary-button full" type="submit">Crear y entrar</button>
         </form>
       </div>
-      <div class="panel-card">
-        <div class="panel-head"><div><p class="eyebrow">Cuentas creadas</p><h2>Usuarios nuevos</h2></div><span class="counter-pill" data-created-count>0</span></div>
-        <div class="stack-list" data-created-login></div>
-      </div>
+    </section>
+
+    <section class="login-panel created-panel">
+      <div class="panel-head"><div><p class="eyebrow">Cuentas creadas</p><h2>Usuarios nuevos</h2></div><span class="counter-pill" data-created-count>0</span></div>
+      <div class="stack-list created-list" data-created-login></div>
     </section>
 
     <section class="login-panel">
