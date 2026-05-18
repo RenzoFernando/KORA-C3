@@ -26,7 +26,20 @@ function loadState() {
 
 function saveProfile(profile) {
   const previous = loadState();
-  const next = { ...previous, profileId: profile.id, accountHidden: false, theme: previous.theme || 'light' };
+  const sameRole = previous.profileId === profile.id && previous.legalRole === profile.role;
+  const next = {
+    ...previous,
+    profileId: profile.id,
+    accountHidden: false,
+    theme: previous.theme || 'light',
+    acceptedLegal: sameRole ? Boolean(previous.acceptedLegal) : false,
+    legalRole: sameRole ? previous.legalRole : null,
+    legalDraft: sameRole ? previous.legalDraft : { terms: false, privacy: false, roleData: false },
+    onboardingSeen: sameRole ? Boolean(previous.onboardingSeen) : false,
+    onboardingSnoozedUntil: sameRole ? (previous.onboardingSnoozedUntil || 0) : 0,
+    viewGuidesSeen: sameRole ? (previous.viewGuidesSeen || {}) : {},
+    viewGuideSnoozed: sameRole ? (previous.viewGuideSnoozed || {}) : {}
+  };
   localStorage.setItem(STORAGE_KEY, JSON.stringify(next));
   toast(`Entrando como ${profile.name}.`);
   setTimeout(() => { window.location.href = 'index.html'; }, 420);
@@ -49,8 +62,14 @@ function avatarMarkup(profile) {
   return `<span class="avatar-shell"><span>${escapeHtml(profile.initial || profile.name.slice(0, 1))}</span></span>`;
 }
 
+function roleDefinition(role) {
+  const roles = DATA.roleSystem || {};
+  return roles[role] || roles.user || { label: 'Explorador musical', action: 'Descubrir', purpose: 'Participa en el descubrimiento musical local.' };
+}
+
 function profileCard(profile) {
-  return `<button class="login-card" type="button" data-profile-id="${escapeHtml(profile.id)}"><div class="list-item">${avatarMarkup(profile)}<span class="list-item-content"><strong>${escapeHtml(profile.name)}</strong><span>${escapeHtml(profile.roleLabel)} · ${escapeHtml(profile.city || 'Cali')}</span></span></div><p>${escapeHtml(profile.bio || 'Perfil disponible para KORA.')}</p></button>`;
+  const role = roleDefinition(profile.role);
+  return `<button class="login-card" type="button" data-profile-id="${escapeHtml(profile.id)}"><div class="list-item">${avatarMarkup(profile)}<span class="list-item-content"><strong>${escapeHtml(profile.name)}</strong><span>${escapeHtml(role.label)} · ${escapeHtml(role.action)} · ${escapeHtml(profile.city || 'Cali')}</span></span></div><p>${escapeHtml(profile.bio || role.purpose)}</p></button>`;
 }
 
 function renderProfiles() {
@@ -58,30 +77,30 @@ function renderProfiles() {
   qs('[data-role-login]').innerHTML = DATA.roleProfiles.map(profileCard).join('');
   const created = createdProfiles();
   qs('[data-created-count]').textContent = created.length;
-  qs('[data-created-login]').innerHTML = created.length ? created.map(profile => `<button class="list-item clickable" type="button" data-profile-id="${escapeHtml(profile.id)}">${avatarMarkup(profile)}<span class="list-item-content"><strong>${escapeHtml(profile.name)}</strong><span>${escapeHtml(profile.email)} · ${escapeHtml(profile.roleLabel)}</span></span></button>`).join('') : '<div class="empty-state">Aún no hay usuarios creados en este navegador.</div>';
+  qs('[data-created-login]').innerHTML = created.length ? created.map(profile => {
+    const role = roleDefinition(profile.role);
+    return `<button class="list-item clickable" type="button" data-profile-id="${escapeHtml(profile.id)}">${avatarMarkup(profile)}<span class="list-item-content"><strong>${escapeHtml(profile.name)}</strong><span>${escapeHtml(profile.email)} · ${escapeHtml(role.label)} · ${escapeHtml(role.action)}</span></span></button>`;
+  }).join('') : '<div class="empty-state">Aún no hay usuarios creados en este navegador.</div>';
 }
 
 function roleLabel(role) {
-  if (role === 'artist') return 'Artista local';
-  if (role === 'company') return 'Scout discográfica';
-  if (role === 'ambassador') return 'Embajador cultural';
-  if (role === 'curator') return 'Oyente curador';
-  return 'Explorador musical';
+  return roleDefinition(role).label;
 }
 
 function createProfileFromForm(form) {
   const data = new FormData(form);
   const role = data.get('role') || 'user';
+  const definition = roleDefinition(role);
   const name = data.get('name') || data.get('email').split('@')[0];
   const profile = {
     id: `created-${Date.now()}`,
     name,
     email: data.get('email'),
     role,
-    roleLabel: roleLabel(role),
+    roleLabel: definition.label,
     city: 'Cali',
     initial: name.trim().slice(0, 1).toUpperCase(),
-    bio: role === 'artist' ? 'Cuenta creada para publicar música y revisar licencias.' : role === 'company' ? 'Cuenta creada para scouting y analítica autorizada.' : role === 'ambassador' ? 'Cuenta creada para curaduría comunitaria, tableros y embajada cultural.' : role === 'curator' ? 'Cuenta creada para lectura crítica, tableros y contexto musical.' : 'Cuenta creada para descubrir, guardar y compartir artistas locales.'
+    bio: definition.purpose
   };
   const profiles = createdProfiles();
   profiles.push(profile);
@@ -98,7 +117,8 @@ function signIn(form) {
     return;
   }
   const name = email.split('@')[0].replace(/[._-]/g, ' ').replace(/\b\w/g, letter => letter.toUpperCase());
-  const profile = { id: `created-${Date.now()}`, name, email, role: 'user', roleLabel: 'Explorador musical', city: 'Cali', initial: name.slice(0, 1), bio: 'Cuenta creada desde inicio de sesión.' };
+  const definition = roleDefinition('user');
+  const profile = { id: `created-${Date.now()}`, name, email, role: 'user', roleLabel: definition.label, city: 'Cali', initial: name.slice(0, 1), bio: definition.purpose };
   const profiles = createdProfiles();
   profiles.push(profile);
   writeCreatedProfiles(profiles);

@@ -12,37 +12,54 @@
   <link rel="stylesheet" href="assets/css/styles.css">
 </head>
 <body class="login-body">
-  <main class="login-shell">
-    <section class="login-hero">
-      <div>
-        <p class="eyebrow">Acceso KORA</p>
-        <h1>Entra, crea cuenta o elige un perfil disponible.</h1>
-        <p>Johan, Karold, Luna y Renzo quedan como perfiles principales. También puedes crear una cuenta para vivir el flujo como usuario nuevo.</p>
-      </div>
-      <img src="assets/img/logo.svg" alt="KORA">
-    </section>
-
-    <section class="login-panel auth-panel">
-      <div class="auth-card-main">
-        <div class="panel-head"><div><p class="eyebrow">Login</p><h2>Acceso normal</h2></div><a class="soft-button" href="index.html">Abrir app</a></div>
-        <div class="auth-tabs">
-          <button class="auth-tab is-active" type="button" data-auth-tab="signin">Iniciar sesión</button>
-          <button class="auth-tab" type="button" data-auth-tab="signup">Crear usuario</button>
+  <main class="login-shell login-shell-auth">
+    <section class="login-layout">
+      <section class="login-panel auth-panel login-primary-card">
+        <div class="auth-card-main">
+          <div class="login-brand-row"><img src="assets/img/logo.svg" alt="KORA"><span>Acceso seguro</span></div>
+          <div class="panel-head"><div><p class="eyebrow">Login</p><h1>Entra a KORA</h1></div><a class="soft-button" href="index.html">Abrir app</a></div>
+          <p class="support-copy">Inicia sesión, crea una cuenta o entra con un perfil de prueba para explorar la experiencia por rol.</p>
+          <div class="auth-tabs">
+            <button class="auth-tab is-active" type="button" data-auth-tab="signin">Iniciar sesión</button>
+            <button class="auth-tab" type="button" data-auth-tab="signup">Crear usuario</button>
+          </div>
+          <form class="auth-form is-active" data-auth-form="signin">
+            <label>Correo<input name="email" type="email" required placeholder="correo@dominio.com"></label>
+            <label>Contraseña<input name="password" type="password" required placeholder="••••••••"></label>
+            <button class="primary-button full" type="submit">Entrar</button>
+            <p class="support-copy">Si el correo no existe, KORA crea una cuenta de explorador musical para continuar.</p>
+          </form>
+          <form class="auth-form" data-auth-form="signup">
+            <label>Nombre<input name="name" type="text" required placeholder="Tu nombre"></label>
+            <label>Correo<input name="email" type="email" required placeholder="correo@dominio.com"></label>
+            <label>Rol<select name="role"><option value="user">Explorador musical · descubrir</option><option value="curator">Oyente curador · recomendar</option><option value="ambassador">Embajador cultural · contextualizar</option><option value="artist">Artista local · publicar</option><option value="company">Empresa / scout · analizar</option></select></label>
+            <label>Contraseña<input name="password" type="password" required placeholder="Crear contraseña"></label>
+            <button class="primary-button full" type="submit">Crear y entrar</button>
+          </form>
         </div>
-        <form class="auth-form is-active" data-auth-form="signin">
-          <label>Correo<input name="email" type="email" required placeholder="correo@dominio.com"></label>
-          <label>Contraseña<input name="password" type="password" required placeholder="••••••••"></label>
-          <button class="primary-button full" type="submit">Entrar</button>
-          <p class="support-copy">Si el correo no existe, KORA crea una cuenta de explorador musical para continuar.</p>
-        </form>
-        <form class="auth-form" data-auth-form="signup">
-          <label>Nombre<input name="name" type="text" required placeholder="Tu nombre"></label>
-          <label>Correo<input name="email" type="email" required placeholder="correo@dominio.com"></label>
-          <label>Rol<select name="role"><option value="user">Explorador musical</option><option value="curator">Oyente curador</option><option value="ambassador">Embajador cultural</option><option value="artist">Artista local</option><option value="company">Scout discográfica</option></select></label>
-          <label>Contraseña<input name="password" type="password" required placeholder="Crear contraseña"></label>
-          <button class="primary-button full" type="submit">Crear y entrar</button>
-        </form>
-      </div>
+      </section>
+
+      <aside class="login-side-stack">
+        <section class="login-hero login-intro-card">
+          <div>
+            <p class="eyebrow">Qué es KORA</p>
+            <h1>Descubre música emergente con historia, comunidad y memoria local.</h1>
+            <p>En KORA encuentras artistas de la escena local, entiendes su contexto cultural, guardas hallazgos y los compartes con una comunidad musical.</p>
+          </div>
+          <img src="assets/img/logo.svg" alt="KORA">
+        </section>
+
+        <section class="login-panel compact-login-info">
+          <div class="panel-head"><div><p class="eyebrow">Qué vas a encontrar</p><h2>Cinco acciones clave</h2></div><span class="counter-pill">Antes de entrar</span></div>
+          <div class="role-action-grid">
+            <article class="role-feature"><strong>Descubrir</strong><span>Artistas emergentes por escena, barrio, género y afinidad cultural.</span></article>
+            <article class="role-feature"><strong>Escuchar cápsulas</strong><span>Fragmentos breves acompañados de historia para decidir con contexto.</span></article>
+            <article class="role-feature"><strong>Guardar hallazgos</strong><span>Un tablero de memoria musical para volver a escuchar lo que conectó contigo.</span></article>
+            <article class="role-feature"><strong>Compartir comunidad</strong><span>Reposts, comentarios y actividad de amigos para descubrir desde señales humanas.</span></article>
+            <article class="role-feature"><strong>Participar por rol</strong><span>Exploradores, curadores, embajadores, artistas y empresas viven funciones distintas.</span></article>
+          </div>
+        </section>
+      </aside>
     </section>
 
     <section class="login-panel created-panel">
@@ -56,7 +73,7 @@
     </section>
 
     <section class="login-panel">
-      <div class="panel-head"><div><p class="eyebrow">Explora por rol</p><h2>Artista, embajadora, scouting y usuario</h2></div></div>
+      <div class="panel-head"><div><p class="eyebrow">Explora por rol</p><h2>Descubre, recomienda, contextualiza, publica o analiza</h2></div></div>
       <div class="login-grid" data-role-login></div>
     </section>
   </main>

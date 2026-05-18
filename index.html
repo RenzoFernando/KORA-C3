@@ -19,7 +19,7 @@
         <span class="avatar-shell"><img src="" alt="" data-profile-avatar><span data-profile-initial>L</span></span>
         <span>
           <strong data-profile-name>Luna Martinez</strong>
-          <small data-profile-role>Oyente exploradora</small>
+          <small data-profile-role>Exploradora musical</small>
         </span>
       </button>
       <nav class="nav-list">
@@ -43,6 +43,7 @@
       <section class="sidebar-card compact-card quick-tools">
         <p class="eyebrow">Herramientas</p>
         <button class="tool-link" type="button" data-open-ai>Hablar con KORA AI</button>
+        <button class="tool-link" type="button" data-open-onboarding>Ver bienvenida KORA</button>
         <button class="tool-link" type="button" data-open-notifications>Notificaciones</button>
         <button class="tool-link" type="button" data-open-settings>Ajustes y privacidad</button>
       </section>
@@ -71,12 +72,21 @@
       <main class="content-area">
         <section class="view is-active" data-view="discover">
           <article class="hero-panel" data-hero-panel></article>
+          <article class="panel-card">
+            <div class="panel-head"><div><p class="eyebrow">Qué vas a encontrar</p><h2>Historias, hallazgos y comunidad local</h2></div><span class="counter-pill">Contexto + memoria</span></div>
+            <p>En KORA cada canción llega con una historia de escena, barrio o comunidad. El usuario escucha una cápsula breve, guarda lo que quiere recordar y ve cómo otras personas participan alrededor de ese hallazgo.</p>
+            <div class="role-action-grid">
+              <article class="role-feature"><strong>Historia local</strong><span>Cada cápsula muestra por qué la canción importa en una escena, barrio o comunidad.</span></article>
+              <article class="role-feature"><strong>Memoria musical</strong><span>Los hallazgos guardados vuelven al tablero con razones, notas y recordatorios.</span></article>
+              <article class="role-feature"><strong>Descubrimiento social</strong><span>Amigos, curadores y artistas convierten la escucha en conversación y recomendación.</span></article>
+            </div>
+          </article>
           <div class="section-heading">
             <div>
               <p class="eyebrow">Cápsulas locales</p>
               <h1>Descubre artistas emergentes con contexto cultural.</h1>
             </div>
-            <button class="soft-button" type="button" data-next-artist>Siguiente cápsula</button>
+            <div class="section-actions"><button class="soft-button" type="button" data-open-view-guide>¿Qué encuentro aquí?</button><button class="soft-button" type="button" data-next-artist>Siguiente cápsula</button></div>
           </div>
           <div class="capsule-carousel" aria-label="Carrusel de cápsulas locales">
                 <button class="carousel-button" type="button" data-capsule-prev aria-label="Ver cápsulas anteriores">‹</button>
@@ -98,6 +108,10 @@
 
         <section class="view" data-view="player">
           <article class="player-panel" data-player-panel></article>
+          <article class="panel-card">
+            <div class="panel-head"><div><p class="eyebrow">Escucha con decisión</p><h2>El player también cuenta el contexto</h2></div><button class="soft-button" type="button" data-open-view-guide>¿Qué encuentro aquí?</button></div>
+            <p>En KORA, reproducir una canción no termina en play o pausa. El usuario escucha una cápsula breve, lee la historia del artista, entiende la escena y decide si guarda, repostea o comparte el hallazgo con contexto.</p>
+          </article>
           <article class="panel-card player-control-card">
             <div class="progress-wrap">
               <input type="range" min="0" max="30" value="0" step="1" data-player-range>
@@ -128,8 +142,12 @@
         <section class="view" data-view="interaction">
           <div class="section-heading">
             <div><p class="eyebrow">Feed social</p><h1>Interacción con artistas, curadores y escena local.</h1></div>
-            <button class="primary-button" type="button" data-add-playlist>Sumar a playlist local</button>
+            <div class="section-actions"><button class="soft-button" type="button" data-open-view-guide>¿Qué encuentro aquí?</button><button class="primary-button" type="button" data-add-playlist>Sumar a playlist local</button></div>
           </div>
+          <article class="panel-card">
+            <div class="panel-head"><div><p class="eyebrow">Comunidad diferencial</p><h2>La recomendación nace de personas, no solo de algoritmos</h2></div><span class="counter-pill">Feed público</span></div>
+            <p>El feed muestra lo que guardan, comentan y comparten otros usuarios para que el descubrimiento tenga criterio social, memoria local y conversación visible dentro de la plataforma.</p>
+          </article>
           <div class="interaction-layout">
             <div class="feed-column" data-artist-feed></div>
             <aside class="panel-card sticky-panel">
@@ -151,6 +169,7 @@
         <section class="view" data-view="publish">
           <div class="section-heading">
             <div><p class="eyebrow">Workspace artista</p><h1>Publica música, contexto visual y cápsulas de 30 segundos.</h1></div>
+            <button class="soft-button" type="button" data-open-view-guide>¿Qué encuentro aquí?</button>
           </div>
           <div class="publish-layout">
             <form class="panel-card publish-form" data-publish-form>
@@ -174,7 +193,7 @@
         </section>
 
         <section class="view" data-view="billing">
-          <div class="section-heading"><div><p class="eyebrow">Modelo de negocio</p><h1>Pagos, suscripciones y facturación electrónica.</h1></div></div>
+          <div class="section-heading"><div><p class="eyebrow">Modelo de negocio</p><h1>Pagos, suscripciones y facturación electrónica.</h1></div><button class="soft-button" type="button" data-open-view-guide>¿Qué encuentro aquí?</button></div>
           <div class="plan-grid" data-plan-grid></div>
           <div class="billing-grid">
             <form class="panel-card payment-form" data-payment-form>
@@ -193,6 +212,7 @@
         </section>
 
         <section class="view" data-view="profile">
+          <div class="section-heading"><div><p class="eyebrow">Perfil y permisos</p><h1>Tu rol, tu memoria y tus autorizaciones.</h1></div><button class="soft-button" type="button" data-open-view-guide>¿Qué encuentro aquí?</button></div>
           <div class="profile-grid-main">
             <article class="panel-card" data-profile-overview></article>
             <article class="panel-card" data-role-workspace></article>
@@ -221,9 +241,9 @@
       <h2 id="consent-title">Vamos con las autorizaciones</h2>
       <div class="consent-visual" aria-hidden="true"><span>♪</span><span>✓</span><span>↗</span></div>
       <form class="consent-form" data-consent-form>
-        <label class="check-row"><input type="checkbox" name="terms"><span>Conozco y acepto el <a href="legal.html?doc=terms" target="_blank" rel="noopener">Reglamento y Condiciones de Uso</a> de KORA.</span></label>
-        <label class="check-row"><input type="checkbox" name="privacy"><span>Acepto la <a href="legal.html?doc=privacy" target="_blank" rel="noopener">Autorización de tratamiento de datos personales</a>, incluyendo perfil, preferencias y actividad dentro de la plataforma.</span></label>
-        <label class="check-row"><input type="checkbox" name="roleData"><span>Autorizo el uso de mis datos según mi categoría de usuario, artista o empresa, incluyendo visibilidad controlada para métricas, curaduría y contacto comercial cuando aplique.</span></label>
+        <label class="check-row"><input type="checkbox" name="terms"><span data-legal-copy="terms">Conozco y acepto el Reglamento y Condiciones de Uso de KORA.</span></label>
+        <label class="check-row"><input type="checkbox" name="privacy"><span data-legal-copy="privacy">Acepto la autorización de tratamiento de datos personales según mi rol.</span></label>
+        <label class="check-row"><input type="checkbox" name="roleData"><span data-legal-copy="roleData">Autorizo el uso de datos específico de mi categoría dentro de KORA.</span></label>
         <button class="consent-submit" type="submit" disabled>Aceptar</button>
       </form>
     </section>
