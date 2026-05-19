@@ -2,7 +2,7 @@ const DATA = window.KORA_DATA;
 const STORAGE_KEY = 'kora-corte3-state';
 const CREATED_KEY = 'kora-created-profiles';
 const defaultState = {
-  uiVersion: 9,
+  uiVersion: 10,
   profileId: 'luna',
   acceptedLegal: false,
   acceptedAt: null,
@@ -55,8 +55,8 @@ function loadState() {
     const raw = localStorage.getItem(STORAGE_KEY);
     if (!raw) return { ...defaultState, currentArtist: Math.floor(Math.random() * DATA.artists.length) };
     const parsed = { ...defaultState, ...JSON.parse(raw) };
-    if (parsed.uiVersion !== 9) {
-      parsed.uiVersion = 9;
+    if (parsed.uiVersion !== 10) {
+      parsed.uiVersion = 10;
       parsed.currentArtist = Math.floor(Math.random() * DATA.artists.length);
     }
     return parsed;
@@ -289,7 +289,8 @@ function communityNotificationItems() {
     artistId: item.artistId,
     postId: item.postId,
     community: true,
-    type: item.type
+    type: item.type,
+    actor: item.actor
   }));
 }
 
@@ -391,7 +392,8 @@ function renderHero() {
 function renderCapsules() {
   const artists = runtimeArtists();
   const looped = [...artists, ...artists, ...artists];
-  qs('[data-capsule-grid]').innerHTML = looped.map((artist, index) => {
+  const track = qs('[data-capsule-grid]');
+  track.innerHTML = looped.map((artist, index) => {
     const realIndex = index % artists.length;
     const saved = state.saved.includes(artist.id);
     const active = realIndex === state.currentArtist;
@@ -411,6 +413,19 @@ function renderCapsules() {
       </article>
     `;
   }).join('');
+  track.dataset.loopReady = '';
+  if (!track.dataset.loopBound) {
+    track.dataset.loopBound = 'true';
+    let ticking = false;
+    track.addEventListener('scroll', () => {
+      if (ticking) return;
+      ticking = true;
+      requestAnimationFrame(() => {
+        prepareCapsuleLoop();
+        ticking = false;
+      });
+    }, { passive: true });
+  }
   requestAnimationFrame(() => prepareCapsuleLoop(true));
 }
 
@@ -772,18 +787,18 @@ function renderInteraction() {
   if (notificationsNode) notificationsNode.innerHTML = unreadNotifications().slice(0, 4).map(item => `<article class="mini-card"><strong>${escapeHtml(item.title)}</strong><span>${escapeHtml(item.body)}</span></article>`).join('') || '<article class="mini-card"><strong>Sin notificaciones pendientes</strong><span>Tu bandeja está limpia.</span></article>';
 }
 
-function validationConfig() {
-  return DATA.phaseValidation || {
-    title: 'Alcance de validación del prototipo',
-    body: 'En esta primera fase se validó principalmente la experiencia del usuario oyente. Los flujos de artista y empresa quedan prototipados como segunda fase y requieren validación específica.',
-    artist: { eyebrow: 'Fase 7 · Artista', title: 'Módulo artista prototipado', badge: 'Segunda fase', body: 'Publicación, métricas simuladas, licencia y autorización de visibilidad.', items: ['Publicaciones', 'Métricas', 'Licencia', 'Autorización'] },
-    company: { eyebrow: 'Fase 7 · Empresa', title: 'Módulo empresa prototipado', badge: 'Datos autorizados', body: 'Radar, escenas activas y scouting responsable.', items: ['Radar', 'Escenas', 'Métricas', 'Límites'] }
+function ecosystemConfig() {
+  return DATA.ecosystemPanels || {
+    title: 'Herramientas del ecosistema KORA',
+    body: 'Artistas, empresas y usuarios participan con permisos claros, métricas visibles y funciones separadas por rol.',
+    artist: { eyebrow: 'Workspace artista', title: 'Publicación y seguimiento del artista', badge: 'Herramientas de artista', body: 'Publicación, métricas, licencia y autorización de visibilidad.', items: ['Publicaciones', 'Métricas', 'Licencia', 'Autorización'] },
+    company: { eyebrow: 'Radar empresarial', title: 'Scouting con datos autorizados', badge: 'Acceso controlado', body: 'Radar, escenas activas y scouting responsable.', items: ['Radar', 'Escenas', 'Métricas', 'Límites'] }
   };
 }
 
 function phasePrototypePanel(type) {
-  const validation = validationConfig();
-  const block = validation[type] || validation.artist;
+  const ecosystem = ecosystemConfig();
+  const block = ecosystem[type] || ecosystem.artist;
   const items = block.items || [];
   return `
     <div class="phase-panel-layout">
@@ -795,8 +810,8 @@ function phasePrototypePanel(type) {
       </div>
       <aside class="phase-validation-note">
         <span class="counter-pill">${escapeHtml(block.badge)}</span>
-        <strong>${escapeHtml(validation.title)}</strong>
-        <p>${escapeHtml(validation.body)}</p>
+        <strong>${escapeHtml(ecosystem.title)}</strong>
+        <p>${escapeHtml(ecosystem.body)}</p>
       </aside>
     </div>
   `;
@@ -837,32 +852,50 @@ function renderPublished() {
   qsa('input, textarea, button', form).forEach(node => node.disabled = profile.role !== 'artist');
 }
 
+
+function profilePlanId(profile = activeProfile()) {
+  if (profile.planId) return profile.planId;
+  const roleMap = { user: 'free', curator: 'premium', ambassador: 'premium', artist: 'artist', company: 'company' };
+  return roleMap[profile.role] || 'free';
+}
+
+function profilePlan(profile = activeProfile()) {
+  return DATA.plans.find(plan => plan.id === profilePlanId(profile)) || DATA.plans[0];
+}
+
 function renderBilling() {
-  qs('[data-plan-grid]').innerHTML = DATA.plans.map(plan => `
-    <article class="plan-card">
+  const profile = activeProfile();
+  const activePlan = profilePlan(profile);
+  qs('[data-plan-grid]').innerHTML = DATA.plans.map(plan => {
+    const isCurrent = plan.id === activePlan.id;
+    return `
+    <article class="plan-card ${isCurrent ? 'is-current-plan' : ''}">
       <p class="eyebrow">${escapeHtml(plan.audience)}</p>
       <h2>${escapeHtml(plan.name)}</h2>
-      <span class="status-chip">${escapeHtml(plan.badge)}</span>
+      <div class="tag-row"><span class="status-chip">${escapeHtml(plan.badge)}</span>${isCurrent ? '<span class="status-chip">Plan activo</span>' : ''}</div>
       <div class="plan-price">${plan.price ? money(plan.price) : 'Sin costo'}</div>
       <div class="stack-list">${plan.features.map(feature => `<div class="privacy-card">${escapeHtml(feature)}</div>`).join('')}</div>
       ${plan.note ? `<p class="support-copy">${escapeHtml(plan.note)}</p>` : ''}
-      <button class="soft-button full" type="button" data-select-plan="${escapeHtml(plan.id)}">Elegir plan</button>
+      <button class="soft-button full" type="button" data-select-plan="${escapeHtml(plan.id)}">${isCurrent ? 'Usar este plan' : 'Elegir plan'}</button>
     </article>
-  `).join('');
-  qs('[data-plan-select]').innerHTML = DATA.plans.filter(plan => plan.price > 0).map(plan => `<option value="${escapeHtml(plan.id)}">${escapeHtml(plan.name)} · ${money(plan.price)}</option>`).join('');
+  `;
+  }).join('');
+  const paidPlans = DATA.plans.filter(plan => plan.price > 0);
+  qs('[data-plan-select]').innerHTML = paidPlans.map(plan => `<option value="${escapeHtml(plan.id)}">${escapeHtml(plan.name)} · ${money(plan.price)}</option>`).join('');
+  if (activePlan.price > 0) qs('[data-plan-select]').value = activePlan.id;
   qs('[data-invoice-count]').textContent = state.invoices.length;
   qs('[data-invoice-list]').innerHTML = state.invoices.length ? state.invoices.slice().reverse().map(invoice => `
     <article class="invoice-card"><strong>${escapeHtml(invoice.number)}</strong><p>${escapeHtml(invoice.planName)} · ${money(invoice.total)} · ${escapeHtml(invoice.paidAt)}</p><span class="status-chip">Factura electrónica generada</span></article>
   `).join('') : '<div class="empty-state">Aún no hay facturas registradas.</div>';
-  const profile = activeProfile();
   qs('[data-company-access-panel]').innerHTML = profile.role === 'company' ? `
-    <div class="panel-head"><div><p class="eyebrow">Acceso empresas CM</p><h2>Datos disponibles por autorización</h2></div><span class="counter-pill">Scouting responsable</span></div>
-    <div class="tag-cloud"><span class="tag">Métricas agregadas</span><span class="tag">Artistas visibles</span><span class="tag">Límites de uso</span><span class="tag">Validación pendiente</span></div>
+    <div class="panel-head"><div><p class="eyebrow">Acceso empresas CM</p><h2>Datos disponibles por autorización</h2></div><span class="counter-pill">${escapeHtml(activePlan.name)}</span></div>
+    <div class="tag-cloud"><span class="tag">Métricas agregadas</span><span class="tag">Artistas visibles</span><span class="tag">Límites de uso</span><span class="tag">Acceso controlado</span></div>
     <p>El acceso empresarial se limita a artistas que autorizaron visibilidad o análisis de perfil. La información se presenta para scouting responsable, no para contacto automático ni cesión irrestricta de datos.</p>
     <div class="phase-mini-grid"><article class="mini-card"><strong>Qué puede ver</strong><span>Match cultural, escena, guardados agregados y señales comunitarias.</span></article><article class="mini-card"><strong>Qué no puede ver</strong><span>Datos privados, contacto directo o información no autorizada por artistas.</span></article></div>
   ` : `
-    <div class="panel-head"><div><p class="eyebrow">Transparencia</p><h2>Condiciones comerciales visibles</h2></div><span class="counter-pill">COP</span></div>
-    <p>La sección informa precio integral, factura electrónica, derecho de retracto, reversión del pago y canal de soporte antes de completar la suscripción. Los flujos de artista y empresa quedan prototipados como segunda fase de validación.</p>
+    <div class="panel-head"><div><p class="eyebrow">Plan asociado</p><h2>${escapeHtml(activePlan.name)} para ${escapeHtml(profile.name)}</h2></div><span class="counter-pill">${activePlan.price ? money(activePlan.price) : 'Sin costo'}</span></div>
+    <p>Este perfil tiene un plan sugerido según su rol. Puedes cambiarlo en el selector de pago para generar una factura o probar otro modelo de suscripción.</p>
+    <div class="phase-mini-grid"><article class="mini-card"><strong>Beneficio principal</strong><span>${escapeHtml(activePlan.features[0] || 'Acceso a KORA')}</span></article><article class="mini-card"><strong>Alcance comercial</strong><span>${escapeHtml(activePlan.note || 'Condiciones visibles antes del pago.')}</span></article></div>
   `;
 }
 
@@ -886,7 +919,7 @@ function generateInvoice(form) {
   state.invoices.push(invoice);
   saveState();
   renderBilling();
-  showModal(`<h2>Pago registrado</h2><div class="invoice-card"><strong>${escapeHtml(invoice.number)}</strong><p>${escapeHtml(invoice.planName)}</p><p>Subtotal: ${money(invoice.subtotal)}<br>IVA incluido: ${money(invoice.tax)}<br>Total: ${money(invoice.total)}</p><span class="status-chip">Enviada a ${escapeHtml(invoice.email)}</span></div><div class="legal-note">Factura simulada para prototipo. Las condiciones comerciales, retracto, reversión y alcance por rol están documentados en la sección legal.</div><button class="primary-button full" type="button" data-close-modal>Entendido</button>`);
+  showModal(`<h2>Pago registrado</h2><div class="invoice-card"><strong>${escapeHtml(invoice.number)}</strong><p>${escapeHtml(invoice.planName)}</p><p>Subtotal: ${money(invoice.subtotal)}<br>IVA incluido: ${money(invoice.tax)}<br>Total: ${money(invoice.total)}</p><span class="status-chip">Enviada a ${escapeHtml(invoice.email)}</span></div><div class="legal-note">Comprobante generado para la demostración. Las condiciones comerciales, retracto, reversión y alcance por rol están documentados en la sección legal.</div><button class="primary-button full" type="button" data-close-modal>Entendido</button>`);
   form.reset();
 }
 
@@ -900,7 +933,7 @@ function renderProfile() {
       <div><p class="eyebrow">Perfil activo · ${escapeHtml(role.action)}</p><h2>${escapeHtml(profile.name)}</h2><p>${escapeHtml(profile.bio || role.purpose)}</p></div>
     </div>
     <div class="profile-panel-stack">
-      <div class="tag-cloud"><span class="tag">${escapeHtml(role.label)}</span><span class="tag">${escapeHtml(profile.city)}</span><span class="tag">${escapeHtml(profile.code || 'Cuenta creada')}</span><span class="tag">${escapeHtml(summary.space)}</span></div>
+      <div class="tag-cloud"><span class="tag">${escapeHtml(role.label)}</span><span class="tag">${escapeHtml(profile.city)}</span><span class="tag">${escapeHtml(profile.code || 'Cuenta creada')}</span><span class="tag">${escapeHtml(summary.space)}</span><span class="tag">${escapeHtml(profilePlan(profile).name)}</span></div>
       <div class="profile-role-banner"><strong>${escapeHtml(summary.title)}</strong><span>${escapeHtml(summary.body)}</span></div>
       <div class="profile-metrics role-aware-metrics">${profileMetricTiles(profile)}</div>
       <div class="profile-summary-grid">${profileSummaryCards(profile)}</div>
@@ -1098,7 +1131,7 @@ function artistDashboard(profile) {
       <div class="license-status-list">${artistAuthorizationCards(published, visible, legalState)}</div>
     </section>
     <section class="role-workspace-section">
-      <div class="panel-head"><div><p class="eyebrow">Checklist</p><h3>Antes de publicar</h3></div><span class="counter-pill">Prototipo</span></div>
+      <div class="panel-head"><div><p class="eyebrow">Checklist</p><h3>Antes de publicar</h3></div><span class="counter-pill">Guía</span></div>
       <div class="publish-checklist">${artistChecklistCards()}</div>
     </section>
   </div>`;
@@ -1126,7 +1159,7 @@ function artistAuthorizationCards(published, visible, legalState) {
     ['Licencia de plataforma', legalState, state.acceptedLegal ? 'Activo' : 'Pendiente'],
     ['Visibilidad para empresas', `${visible} de ${published.length} cápsulas habilitadas para métricas agregadas`, visible ? 'Autorizada' : 'Sin habilitar'],
     ['Datos compartidos', 'Solo señales agregadas: guardados, reposts, comentarios y afinidad cultural.', 'Limitado'],
-    ['Siguiente validación', 'Contrastar este flujo con artistas, docentes de música o agentes del sector.', 'Pendiente']
+    ['Control de publicación', 'Revisar audio, portada, historia, licencia y visibilidad antes de compartir la cápsula.', 'Revisar']
   ];
   return items.map(item => `<article class="role-dossier"><div class="license-status-head"><strong>${escapeHtml(item[0])}</strong><span class="status-chip">${escapeHtml(item[2])}</span></div><span>${escapeHtml(item[1])}</span></article>`).join('');
 }
@@ -1200,7 +1233,7 @@ function companyMetricCards(radar, authorized) {
 }
 
 function companyScoutingCards() {
-  return (DATA.companyScoutingSignals || []).map(item => `<article class="checklist-card"><span class="status-chip">Permitido</span><strong>${escapeHtml(item.title)}</strong><p>${escapeHtml(item.body)}</p></article>`).join('') + `<article class="role-dossier is-highlight"><strong>Sin contacto automático</strong><span>El prototipo no entrega datos privados ni habilita contacto directo fuera de autorizaciones del artista. El flujo empresarial queda para validación posterior.</span></article>`;
+  return (DATA.companyScoutingSignals || []).map(item => `<article class="checklist-card"><span class="status-chip">Permitido</span><strong>${escapeHtml(item.title)}</strong><p>${escapeHtml(item.body)}</p></article>`).join('') + `<article class="role-dossier is-highlight"><strong>Sin contacto automático</strong><span>KORA no entrega datos privados ni habilita contacto directo fuera de autorizaciones del artista.</span></article>`;
 }
 
 function registerResponsibleScout(artistId) {
@@ -1242,7 +1275,7 @@ function privacyCards(profile) {
   const role = roleDefinition(profile);
   const rolePrivacy = (role.privacy || [])[0];
   return [
-    { title: 'Términos aceptados', body: 'Uso de KORA, datos personales y permisos básicos del prototipo.' },
+    { title: 'Términos aceptados', body: 'Uso de KORA, datos personales y permisos básicos por rol.' },
     { title: role.label, body: rolePrivacy ? rolePrivacy[1] : role.purpose },
     { title: 'Control de cuenta', body: 'Puedes cambiar perfil, revisar términos o bajar la cuenta desde esta sección.' }
   ];
@@ -1274,8 +1307,10 @@ function renderNowPlaying() {
   }
   const playIcon = state.isPlaying ? 'pause' : 'play';
   const playLabel = state.isPlaying ? 'Pausar' : 'Reproducir';
+  const total = state.previewMode === 'short' ? artist.preview : artist.duration;
+  const percent = Math.min(100, Math.max(0, total ? Math.round((state.playback / total) * 100) : 0));
   bar.innerHTML = `
-    <div class="mini-now-media"><span class="list-cover tone-${escapeHtml(artist.tone || 'sunset')}">${imgMarkup(artist.cover, artist.track, artist.symbol)}</span><div><strong>${escapeHtml(artist.track)}</strong><span>${escapeHtml(artist.name)} · ${formatTime(state.playback)}${state.isPlaying ? '' : ' · pausado'}</span></div></div>
+    <div class="mini-now-media"><span class="list-cover tone-${escapeHtml(artist.tone || 'sunset')}">${imgMarkup(artist.cover, artist.track, artist.symbol)}</span><div><strong>${escapeHtml(artist.track)}</strong><span>${escapeHtml(artist.name)} · ${formatTime(state.playback)} / ${formatTime(total)}${state.isPlaying ? '' : ' · pausado'}</span><div class="mini-now-progress"><i style="width:${percent}%"></i></div></div></div>
     <div class="mini-now-controls"><button class="icon-button" type="button" data-prev-artist aria-label="Anterior">${svgIcon('prev')}</button><button class="primary-button play-toggle mini-play" type="button" data-toggle-play aria-label="${playLabel}">${svgIcon(playIcon)}<span class="visually-hidden">${playLabel}</span></button><button class="icon-button" type="button" data-next-artist aria-label="Siguiente">${svgIcon('next')}</button><button class="soft-button ${state.shuffle ? 'is-active' : ''}" type="button" data-toggle-shuffle>${svgIcon('shuffle')}<span>Aleatorio</span></button><button class="soft-button ${state.repeat ? 'is-active' : ''}" type="button" data-toggle-repeat>${svgIcon('repeat')}<span>Repetir</span></button></div>
     <div class="mini-now-actions"><button class="soft-button" type="button" data-repost-current>${svgIcon('repost')}<span>Repost</span></button><button class="soft-button" type="button" data-open-friends>${svgIcon('friends')}<span>Amigos</span></button><button class="soft-button" type="button" data-share-menu>${svgIcon('share')}<span>Compartir</span></button></div>
   `;
@@ -1332,9 +1367,25 @@ function toggleSetting(index) {
   toast(state.settingsState[key] ? 'Ajuste activado.' : 'Ajuste desactivado.');
 }
 
+function notificationActorBelongsToActiveProfile(title) {
+  const profile = activeProfile();
+  const firstName = String(profile.name || '').split(' ')[0];
+  return firstName && String(title || '').toLowerCase().includes(firstName.toLowerCase());
+}
+
+function personalizeBaseNotification(item) {
+  const next = { ...item, source: 'system' };
+  if (!notificationActorBelongsToActiveProfile(next.title)) return next;
+  if (next.type === 'comment') return { ...next, title: 'Comentaron un hallazgo de tu comunidad', body: 'Un aporte agregó contexto de barrio a una cápsula compartida.' };
+  if (next.type === 'save') return { ...next, title: 'Hay una cápsula guardada que podría gustarte', body: 'Fue añadida a un tablero de rap, barrio y ladera.' };
+  if (next.type === 'curator') return { ...next, title: 'Una canción fue destacada por su contexto cultural', body: 'La recomendación aparece como señal curatorial en el feed.' };
+  return { ...next, title: 'Tienes una actualización en KORA' };
+}
+
 function unreadNotifications() {
-  const base = DATA.notifications.map(item => ({ ...item, source: 'system' }));
-  return [...memoryReminderItems(), ...communityNotificationItems(), ...base].filter(item => !state.dismissedNotifications.includes(item.id || item.title));
+  const activeName = activeProfile().name;
+  const base = DATA.notifications.map(personalizeBaseNotification);
+  return [...memoryReminderItems(), ...communityNotificationItems().filter(item => item.actor !== activeName), ...base].filter(item => !state.dismissedNotifications.includes(item.id || item.title));
 }
 
 function renderNotificationBadge() {
@@ -1353,8 +1404,8 @@ function renderNotificationBadge() {
 
 function showNotificationsPanel() {
   const unread = unreadNotifications();
-  const content = unread.length ? unread.map(item => `<article class="notification-card ${item.community ? 'is-community' : ''}"><div><span class="status-chip">${escapeHtml(communityTypeLabel(item.type || item.source || 'system'))}</span><strong>${escapeHtml(item.title)}</strong><p>${escapeHtml(item.body)}</p></div><div class="notification-actions">${item.artistId ? `<button class="primary-button" type="button" data-open-notification-artist="${escapeHtml(item.artistId)}">Abrir cápsula</button>` : ''}${item.postId ? `<button class="soft-button" type="button" data-open-notification-post="${escapeHtml(item.postId)}">Ver feed</button>` : ''}<button class="soft-button" type="button" data-dismiss-notification="${escapeHtml(item.id || item.title)}">Cerrar</button></div></article>`).join('') : '<div class="empty-state">No tienes notificaciones pendientes.</div>';
-  showModal(`<h2>Notificaciones</h2><p>Actualizaciones de comunidad, comentarios, reposts, guardados y recordatorios de hallazgos.</p><div class="settings-list">${content}</div><button class="soft-button full" type="button" data-close-modal>Cerrar</button>`);
+  const content = unread.length ? unread.map(item => `<article class="notification-card ${item.community ? 'is-community' : ''}"><div><span class="status-chip">${escapeHtml(communityTypeLabel(item.type || item.source || 'system'))}</span><strong>${escapeHtml(item.title)}</strong><p>${escapeHtml(item.body)}</p></div><div class="notification-actions">${item.artistId ? `<button class="primary-button" type="button" data-open-notification-artist="${escapeHtml(item.artistId)}">Abrir cápsula</button>` : ''}${item.postId ? `<button class="soft-button" type="button" data-open-notification-post="${escapeHtml(item.postId)}">Ver feed</button>` : ''}<button class="soft-button" type="button" data-dismiss-notification="${escapeHtml(item.id || item.title)}">Cerrar aviso</button></div></article>`).join('') : '<div class="empty-state">No tienes notificaciones pendientes.</div>';
+  showModal(`<div class="notification-modal-head"><div><h2>Notificaciones</h2><p>Actualizaciones de comunidad, comentarios, reposts, guardados y recordatorios de hallazgos.</p></div><button class="soft-button" type="button" data-close-modal>Cerrar</button></div><div class="settings-list notification-modal-list">${content}</div>`, 'notifications-modal-card');
 }
 
 function dismissNotification(id) {
@@ -1868,3 +1919,6 @@ bindEvents();
 showLegalGate();
 setTimeout(() => maybeShowViewGuide(currentView()), 900);
 setInterval(autoRotateDiscover, 45000);
+
+
+

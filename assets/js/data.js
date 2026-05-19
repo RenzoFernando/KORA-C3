@@ -1,15 +1,15 @@
 window.KORA_DATA = {
   teamMembers: [
-    { id: 'johan', name: 'Johan Guzman', code: 'A00401480', role: 'curator', roleLabel: 'Oyente curador', city: 'Cali', initial: 'J', avatar: 'assets/img/johan-stiven-guzman.svg', bio: 'Recomienda cápsulas, comenta con criterio y ayuda a ordenar hallazgos por escena.' },
-    { id: 'karold', name: 'Karold Mejia', code: 'A00401806', role: 'artist', roleLabel: 'Artista local', city: 'Cali', initial: 'K', avatar: 'assets/img/karold-lizeth-mejia-orozco.svg', bio: 'Publica cápsulas, cuenta la historia de su lanzamiento y gestiona visibilidad autorizada.' },
-    { id: 'luna', name: 'Luna Martinez', code: 'A00401964', role: 'user', roleLabel: 'Exploradora musical', city: 'Cali', initial: 'L', avatar: 'assets/img/luna-catalina-martinez.svg', bio: 'Descubre artistas emergentes, guarda hallazgos y sigue actividad de la comunidad.' },
-    { id: 'renzo', name: 'Renzo Mosquera', code: 'A00401681', role: 'company', roleLabel: 'Empresa / scout', city: 'Cali', initial: 'R', avatar: 'assets/img/renzo-mosquera-daza.svg', bio: 'Analiza talento emergente con métricas agregadas, permisos y límites de datos.' }
+    { id: 'johan', name: 'Johan Guzman', code: 'A00401480', role: 'curator', roleLabel: 'Oyente curador', city: 'Cali', initial: 'J', avatar: 'assets/img/johan-stiven-guzman.svg', bio: 'Recomienda cápsulas, comenta con criterio y ayuda a ordenar hallazgos por escena.', planId: 'premium' },
+    { id: 'karold', name: 'Karold Mejia', code: 'A00401806', role: 'artist', roleLabel: 'Artista local', city: 'Cali', initial: 'K', avatar: 'assets/img/karold-lizeth-mejia-orozco.svg', bio: 'Publica cápsulas, cuenta la historia de su lanzamiento y gestiona visibilidad autorizada.', planId: 'artist' },
+    { id: 'luna', name: 'Luna Martinez', code: 'A00401964', role: 'user', roleLabel: 'Exploradora musical', city: 'Cali', initial: 'L', avatar: 'assets/img/luna-catalina-martinez.svg', bio: 'Descubre artistas emergentes, guarda hallazgos y sigue actividad de la comunidad.', planId: 'free' },
+    { id: 'renzo', name: 'Renzo Mosquera', code: 'A00401681', role: 'company', roleLabel: 'Empresa / scout', city: 'Cali', initial: 'R', avatar: 'assets/img/renzo-mosquera-daza.svg', bio: 'Analiza talento emergente con métricas agregadas, permisos y límites de datos.', planId: 'company' }
   ],
   roleProfiles: [
-    { id: 'scout-role', name: 'Agencia Brújula', role: 'company', roleLabel: 'Empresa / scout', city: 'Cali', initial: 'A', avatar: 'assets/img/agencia-brujula.svg', bio: 'Analiza escenas, identifica artistas y revisa señales autorizadas para scouting responsable.' },
-    { id: 'ambassador-role', name: 'Laura Pérez', role: 'ambassador', roleLabel: 'Embajadora cultural', city: 'Cali', initial: 'L', avatar: 'assets/img/laura-perez.svg', bio: 'Contextualiza música local conectando canciones con barrio, escena y comunidad.' },
-    { id: 'listener-role', name: 'Mateo Rivas', role: 'user', roleLabel: 'Explorador musical', city: 'Cali', initial: 'M', avatar: 'assets/img/mateo-rivas.svg', bio: 'Descubre artistas emergentes, guarda hallazgos y comparte canciones con amigos.' },
-    { id: 'artist-role', name: 'Sara León', role: 'artist', roleLabel: 'Artista local', city: 'Cali', initial: 'S', avatar: 'assets/img/sara-leon.svg', bio: 'Publica cápsulas, agrega contexto cultural y revisa señales de recepción.' }
+    { id: 'scout-role', name: 'Agencia Brújula', role: 'company', roleLabel: 'Empresa / scout', city: 'Cali', initial: 'A', avatar: 'assets/img/agencia-brujula.svg', bio: 'Analiza escenas, identifica artistas y revisa señales autorizadas para scouting responsable.', planId: 'company' },
+    { id: 'ambassador-role', name: 'Laura Pérez', role: 'ambassador', roleLabel: 'Embajadora cultural', city: 'Cali', initial: 'L', avatar: 'assets/img/laura-perez.svg', bio: 'Contextualiza música local conectando canciones con barrio, escena y comunidad.', planId: 'premium' },
+    { id: 'listener-role', name: 'Mateo Rivas', role: 'user', roleLabel: 'Explorador musical', city: 'Cali', initial: 'M', avatar: 'assets/img/mateo-rivas.svg', bio: 'Descubre artistas emergentes, guarda hallazgos y comparte canciones con amigos.', planId: 'free' },
+    { id: 'artist-role', name: 'Sara León', role: 'artist', roleLabel: 'Artista local', city: 'Cali', initial: 'S', avatar: 'assets/img/sara-leon.svg', bio: 'Publica cápsulas, agrega contexto cultural y revisa señales de recepción.', planId: 'artist' }
   ],
   roleSystem: {
     user: {
@@ -292,30 +292,18 @@ window.KORA_DATA = {
     { title: 'Memoria local', body: 'Cada aporte suma barrio, escena o razón para que el hallazgo no se pierda.' },
     { title: 'Actividad sin chat privado', body: 'El usuario se entera por feed, notificaciones y actividad de amigos.' }
   ],
-  phaseValidation: {
-    title: 'Alcance de validación del prototipo',
-    body: 'En esta primera fase se validó principalmente la experiencia del usuario oyente. Los flujos de artista y empresa quedan prototipados como segunda fase y requieren validación específica con agentes del sector musical y emprendimiento.',
-    artist: {
-      eyebrow: 'Fase 7 · Artista',
-      title: 'Módulo artista prototipado para segunda validación',
-      badge: 'Validación pendiente',
-      body: 'El artista puede publicar cápsulas, revisar recepción simulada, confirmar estado de licencia y decidir si habilita métricas agregadas para empresas.',
-      items: ['Dashboard de publicaciones', 'Métricas simuladas de recepción', 'Estado de licencia visible', 'Autorización para empresas CM', 'Checklist antes de publicar']
-    },
-    company: {
-      eyebrow: 'Fase 7 · Empresa',
-      title: 'Módulo empresa prototipado para scouting responsable',
-      badge: 'Datos autorizados',
-      body: 'La empresa puede revisar radar de artistas, escenas activas y métricas agregadas sin acceder a información privada no autorizada.',
-      items: ['Radar de artistas emergentes', 'Escenas más activas', 'Métricas agregadas', 'Advertencia de datos autorizados', 'CTA de scouting responsable']
-    }
+  ecosystemPanels: {
+    title: 'Herramientas del ecosistema KORA',
+    body: 'Artistas, empresas y usuarios participan con permisos claros, métricas visibles y funciones separadas por rol.',
+    artist: { eyebrow: 'Workspace artista', title: 'Publicación y seguimiento del artista', badge: 'Herramientas de artista', body: 'El artista puede publicar cápsulas, revisar recepción, confirmar estado de licencia y decidir si habilita métricas agregadas para empresas.', items: ['Publicaciones', 'Métricas', 'Licencia', 'Autorización'] },
+    company: { eyebrow: 'Radar empresarial', title: 'Scouting con datos autorizados', badge: 'Acceso controlado', body: 'La empresa puede revisar radar de artistas, escenas activas y métricas agregadas sin acceder a información privada no autorizada.', items: ['Radar', 'Escenas', 'Métricas', 'Límites'] }
   },
   artistPublishChecklist: [
     { title: 'Derechos del audio y portada', body: 'Confirmar que el artista cuenta con permisos suficientes sobre música, imagen y material visual.', state: 'Requerido' },
     { title: 'Historia y contexto cultural', body: 'Agregar barrio, escena, género y relato breve para que la cápsula no sea solo un archivo de audio.', state: 'Requerido' },
     { title: 'Licencia dentro de KORA', body: 'Aceptar licencia no exclusiva para reproducir y comunicar la cápsula dentro de la plataforma.', state: 'Requerido' },
     { title: 'Visibilidad para empresas', body: 'Definir si las empresas CM pueden ver métricas agregadas del lanzamiento.', state: 'Opcional' },
-    { title: 'Validación sector musical', body: 'Contrastar este flujo con artistas, profesores de música o agentes del sector antes de producción.', state: 'Pendiente' }
+    { title: 'Preparación de lanzamiento', body: 'Revisar portada, audio, historia y permisos antes de publicar la cápsula.', state: 'Revisar' }
   ],
   companyScoutingSignals: [
     { title: 'Match cultural', body: 'Afinidad simulada entre artista, escena y criterios de descubrimiento.' },
@@ -394,9 +382,9 @@ window.KORA_DATA = {
   ],
   notifications: [
     { id: 'notif-launch-san-antonio', title: 'Nueva cápsula en San Antonio', body: 'Valentina Cruz tiene una actualización de lanzamiento.', type: 'launch', artistId: 'valentina-cruz' },
-    { id: 'notif-comment-repost', title: 'Luna comentó tu hallazgo', body: 'Su aporte agregó contexto de barrio a una cápsula que compartiste.', type: 'comment', artistId: 'santa-loma', postId: 'post-3' },
-    { id: 'notif-friend-save', title: 'Johan guardó una cápsula que podría gustarte', body: 'La añadió a su tablero de rap, barrio y ladera.', type: 'save', artistId: 'maelo-solar' },
-    { id: 'notif-curator-context', title: 'Karold destacó una canción por su contexto cultural', body: 'La recomendación aparece como señal curatorial en el feed.', type: 'curator', artistId: 'valentina-cruz', postId: 'post-1' },
+    { id: 'notif-comment-repost', title: 'Comentaron un hallazgo de tu comunidad', body: 'Un aporte agregó contexto de barrio a una cápsula compartida.', type: 'comment', artistId: 'santa-loma', postId: 'post-3' },
+    { id: 'notif-friend-save', title: 'Hay una cápsula guardada que podría gustarte', body: 'Fue añadida a un tablero de rap, barrio y ladera.', type: 'save', artistId: 'maelo-solar' },
+    { id: 'notif-curator-context', title: 'Una canción fue destacada por su contexto cultural', body: 'La recomendación aparece como señal curatorial en el feed.', type: 'curator', artistId: 'valentina-cruz', postId: 'post-1' },
     { id: 'notif-playlist-grow', title: 'Tu playlist local creció', body: 'La comunidad sumó nuevos aportes esta semana.', type: 'playlist' },
     { id: 'notif-data-ready', title: 'Autorizaciones al día', body: 'Tu configuración de datos está activa por rol.', type: 'system' }
   ],
@@ -422,10 +410,10 @@ window.KORA_DATA = {
     { title: 'About KORA', body: 'Propósito, célula A y enfoque de descubrimiento digital.' }
   ],
   plans: [
-    { id: 'free', name: 'KORA Base', price: 0, audience: 'Exploradores', badge: 'Inicio validado', features: ['Cápsulas de 30 segundos con historia', 'Guardados y tablero de memoria', 'Feed público de interacción', 'Playlist local colaborativa'], note: 'Plan enfocado en la experiencia oyente validada.' },
+    { id: 'free', name: 'KORA Base', price: 0, audience: 'Exploradores', badge: 'Incluido', features: ['Cápsulas de 30 segundos con historia', 'Guardados y tablero de memoria', 'Feed público de interacción', 'Playlist local colaborativa'], note: 'Plan enfocado en descubrir, guardar y participar en comunidad.' },
     { id: 'premium', name: 'KORA Premium Ligero', price: 12900, audience: 'Usuarios frecuentes', badge: 'Descubrimiento ampliado', features: ['Descubrimiento más personalizado', 'Playlists locales curadas', 'Acceso anticipado a lanzamientos', 'Pasaporte digital con insignias'], note: 'Extiende la experiencia de descubrimiento sin cambiar el alcance legal base.' },
-    { id: 'artist', name: 'KORA Artista', price: 24900, audience: 'Artistas', badge: 'Segunda fase', features: ['Publicación de cápsulas con historia', 'Dashboard de recepción simulada', 'Estado de licencia y autorización CM', 'Checklist previo a publicación'], note: 'Flujo prototipado; requiere validación con agentes del sector musical.' },
-    { id: 'company', name: 'KORA Empresas CM', price: 69900, audience: 'Empresas y scouts', badge: 'Segunda fase B2B', features: ['Radar de talento emergente', 'Escenas activas por contexto', 'Métricas agregadas autorizadas', 'Scouting responsable con límites legales'], note: 'Flujo prototipado; requiere validación con emprendimiento, empresas o scouts.' }
+    { id: 'artist', name: 'KORA Artista', price: 24900, audience: 'Artistas', badge: 'Para publicar', features: ['Publicación de cápsulas con historia', 'Dashboard de recepción simulada', 'Estado de licencia y autorización CM', 'Checklist previo a publicación'], note: 'Plan orientado a publicación, seguimiento y permisos de visibilidad.' },
+    { id: 'company', name: 'KORA Empresas CM', price: 69900, audience: 'Empresas y scouts', badge: 'B2B', features: ['Radar de talento emergente', 'Escenas activas por contexto', 'Métricas agregadas autorizadas', 'Scouting responsable con límites legales'], note: 'Plan orientado a scouting responsable con datos autorizados.' }
   ],
   legalDocs: {
     terms: {
@@ -437,7 +425,7 @@ window.KORA_DATA = {
         ['Permisos por rol', 'La plataforma aplica control de acceso por roles para que cada categoría vea únicamente las funciones y datos necesarios para su operación.'],
         ['Baja de cuenta', 'Cuando una cuenta se da de baja, el perfil deja de ser visible de inmediato. Los datos personales sensibles se eliminan según la política aplicable y puede conservarse información mínima anonimizada para estadísticas globales e integridad del sistema.'],
         ['Menores de edad', 'Los menores podrán acceder bajo restricciones y, cuando corresponda, con autorización de su tutor legal. KORA podrá limitar funciones de publicación, visibilidad o tratamiento de datos en estos casos.'],
-        ['Alcance del prototipo', 'La primera fase validada se centra en usuarios oyentes. Los flujos de artista y empresa están implementados como prototipo de segunda fase y no deben presentarse como validados en producción.']
+        ['Responsabilidad de uso', 'KORA organiza funciones por rol para que usuarios, artistas y empresas usen únicamente los datos y herramientas habilitadas dentro de la plataforma.']
       ]
     },
     privacy: {
@@ -474,8 +462,11 @@ window.KORA_DATA = {
         ['Derecho de retracto', 'En ventas electrónicas, el usuario podrá ejercer el derecho de retracto dentro de los cinco días hábiles siguientes a la compra, siempre que el servicio no haya comenzado a ejecutarse en los términos aplicables.'],
         ['Reversión del pago', 'KORA habilitará revisión de reversión por fraude, operación no solicitada o fallas del servicio. El contacto operativo será soporte@kora.local.'],
         ['SLA empresas', 'Los planes empresariales informarán disponibilidad esperada, alcance de datos autorizados, límites de exactitud y canales de soporte comercial.'],
-        ['Planes en prototipo', 'Los planes de artista y empresa justifican el modelo de negocio, pero quedan como segunda fase de validación sectorial antes de una implementación real.']
+        ['Alcance de los planes', 'Cada plan informa sus beneficios, límites de acceso, condiciones de pago, facturación y soporte antes de completar la suscripción.']
       ]
     }
   }
 };
+
+
+
