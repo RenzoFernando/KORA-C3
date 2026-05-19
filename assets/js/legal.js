@@ -9,7 +9,7 @@ function escapeHtml(value) {
 }
 
 function renderTabs() {
-  const labels = { terms: 'Términos', privacy: 'Datos', license: 'Licencia', payments: 'Pagos' };
+  const labels = { terms: 'Términos y condiciones', privacy: 'Datos', license: 'Licencia', payments: 'Pagos' };
   qs('[data-legal-tabs]').innerHTML = Object.keys(DATA.legalDocs).map(key => `<a class="soft-button ${key === active ? 'is-active' : ''}" href="legal.html?doc=${key}">${labels[key]}</a>`).join('');
 }
 
@@ -20,6 +20,7 @@ function renderDocument() {
     <h1>${escapeHtml(doc.title)}</h1>
     <p>${escapeHtml(doc.lead)}</p>
     ${doc.sections.map(section => `<section class="legal-section"><h2>${escapeHtml(section[0])}</h2><p>${escapeHtml(section[1])}</p></section>`).join('')}
+    <section class="legal-section legal-final-note"><h2>Alcance del prototipo</h2><p>${escapeHtml(DATA.finalNarrative?.statement || 'KORA conecta descubrimiento musical local, comunidad y datos autorizados.')}</p><p>${escapeHtml(DATA.finalNarrative?.scopeBody || '')}</p></section>
     <section class="legal-section"><a class="primary-button" href="index.html">Volver a KORA</a></section>
   `;
 }

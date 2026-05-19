@@ -49,7 +49,7 @@
       </section>
       <section class="sidebar-card legal-links compact-card">
         <p class="eyebrow">Legal</p>
-        <a href="legal.html?doc=terms">Términos</a>
+        <a href="legal.html?doc=terms">Términos y condiciones</a>
         <a href="legal.html?doc=privacy">Datos personales</a>
         <a href="legal.html?doc=license">Licencia musical</a>
         <a href="legal.html?doc=payments">Pagos</a>
@@ -63,6 +63,7 @@
         <div class="topbar-actions">
           <button class="top-icon" type="button" data-open-notifications aria-label="Notificaciones" title="Notificaciones"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 22a2.6 2.6 0 0 0 2.45-1.75h-4.9A2.6 2.6 0 0 0 12 22Zm7-5-1.7-2.15V10a5.32 5.32 0 0 0-4-5.15V4a1.3 1.3 0 1 0-2.6 0v.85a5.32 5.32 0 0 0-4 5.15v4.85L5 17v1.2h14V17Z" fill="currentColor"/></svg></button>
           <button class="top-icon" type="button" data-open-settings aria-label="Ajustes" title="Ajustes"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M19.43 12.98c.04-.32.07-.65.07-.98s-.02-.66-.07-.98l2.1-1.64-2-3.46-2.47 1a7.52 7.52 0 0 0-1.7-.98L15 3.3h-4l-.36 2.64c-.61.24-1.18.57-1.7.98l-2.47-1-2 3.46 2.1 1.64c-.04.32-.07.65-.07.98s.02.66.07.98l-2.1 1.64 2 3.46 2.47-1c.52.41 1.09.74 1.7.98L11 20.7h4l.36-2.64c.61-.24 1.18-.57 1.7-.98l2.47 1 2-3.46-2.1-1.64ZM13 15.46a3.5 3.5 0 1 1 0-7 3.5 3.5 0 0 1 0 7Z" fill="currentColor"/></svg></button>
+          <button class="top-icon help-top-icon" type="button" data-open-view-guide aria-label="Ayuda de esta sección" title="Ayuda de esta sección">?</button>
           <button class="soft-button" type="button" data-theme-toggle>Modo claro</button>
           <button class="soft-button" type="button" data-reset-state>Reiniciar</button>
           <button class="primary-button" type="button" data-go-login>Cambiar perfil</button>
@@ -72,13 +73,15 @@
       <main class="content-area">
         <section class="view is-active" data-view="discover">
           <article class="hero-panel" data-hero-panel></article>
-          <article class="panel-card">
-            <div class="panel-head"><div><p class="eyebrow">Qué vas a encontrar</p><h2>Historias, hallazgos y comunidad local</h2></div><span class="counter-pill">Contexto + memoria</span></div>
-            <p>En KORA cada canción llega con una historia de escena, barrio o comunidad. El usuario escucha una cápsula breve, guarda lo que quiere recordar y ve cómo otras personas participan alrededor de ese hallazgo.</p>
-            <div class="role-action-grid">
-              <article class="role-feature"><strong>Historia local</strong><span>Cada cápsula muestra por qué la canción importa en una escena, barrio o comunidad.</span></article>
-              <article class="role-feature"><strong>Memoria musical</strong><span>Los hallazgos guardados vuelven al tablero con razones, notas y recordatorios.</span></article>
-              <article class="role-feature"><strong>Descubrimiento social</strong><span>Amigos, curadores y artistas convierten la escucha en conversación y recomendación.</span></article>
+          <article class="panel-card discover-summary-card" data-discover-summary>
+            <div class="panel-head"><div><p class="eyebrow">Qué vas a encontrar</p><h2>Historias, hallazgos y comunidad local</h2></div><button class="soft-button" type="button" data-toggle-discover-summary aria-expanded="true"><span data-discover-summary-label>Ocultar</span></button></div>
+            <div class="discover-summary-content" data-discover-summary-content>
+              <p>En KORA cada canción llega con una historia de escena, barrio o comunidad. El usuario escucha una cápsula breve, guarda lo que quiere recordar y ve cómo otras personas participan alrededor de ese hallazgo.</p>
+              <div class="role-action-grid">
+                <article class="role-feature"><strong>Historia local</strong><span>Cada cápsula muestra por qué la canción importa en una escena, barrio o comunidad.</span></article>
+                <article class="role-feature"><strong>Memoria musical</strong><span>Los hallazgos guardados vuelven al tablero con razones, notas y recordatorios.</span></article>
+                <article class="role-feature"><strong>Descubrimiento social</strong><span>Amigos, curadores y artistas convierten la escucha en conversación y recomendación.</span></article>
+              </div>
             </div>
           </article>
           <div class="section-heading">
@@ -171,6 +174,7 @@
             <div><p class="eyebrow">Workspace artista</p><h1>Publica música, contexto visual y cápsulas de 30 segundos.</h1></div>
             <button class="soft-button" type="button" data-open-view-guide>¿Qué encuentro aquí?</button>
           </div>
+          <article class="panel-card prototype-phase-panel" data-artist-prototype-panel></article>
           <div class="publish-layout">
             <form class="panel-card publish-form" data-publish-form>
               <div class="panel-head"><div><p class="eyebrow">Nuevo lanzamiento</p><h2>Subir cápsula</h2></div><span class="counter-pill">Licencia</span></div>
@@ -194,6 +198,7 @@
 
         <section class="view" data-view="billing">
           <div class="section-heading"><div><p class="eyebrow">Modelo de negocio</p><h1>Pagos, suscripciones y facturación electrónica.</h1></div><button class="soft-button" type="button" data-open-view-guide>¿Qué encuentro aquí?</button></div>
+          <article class="panel-card prototype-phase-panel" data-company-prototype-panel></article>
           <div class="plan-grid" data-plan-grid></div>
           <div class="billing-grid">
             <form class="panel-card payment-form" data-payment-form>
@@ -212,14 +217,12 @@
         </section>
 
         <section class="view" data-view="profile">
-          <div class="section-heading"><div><p class="eyebrow">Perfil y permisos</p><h1>Tu rol, tu memoria y tus autorizaciones.</h1></div><button class="soft-button" type="button" data-open-view-guide>¿Qué encuentro aquí?</button></div>
-          <div class="profile-grid-main">
-            <article class="panel-card" data-profile-overview></article>
-            <article class="panel-card" data-role-workspace></article>
-          </div>
+          <div class="section-heading"><div><p class="eyebrow">Perfil activo</p><h1>Tu memoria, actividad y espacio dentro de KORA.</h1></div><button class="soft-button" type="button" data-open-view-guide>¿Qué encuentro aquí?</button></div>
+          <article class="panel-card profile-active-card" data-profile-overview></article>
+          <article class="panel-card" data-role-workspace></article>
           <div class="two-column">
-            <article class="panel-card"><div class="panel-head"><h2>Privacidad y autorizaciones</h2><span class="counter-pill">RBAC</span></div><div class="settings-list" data-privacy-list></div></article>
-            <article class="panel-card"><div class="panel-head"><h2>Gestión de cuenta</h2><span class="counter-pill">Control</span></div><div class="settings-list"><button class="soft-button full" type="button" data-go-login>Cambiar perfil activo</button><button class="soft-button full" type="button" data-open-legal-gate>Revisar autorizaciones</button><button class="danger-button full" type="button" data-delete-account>Bajar cuenta</button></div></article>
+            <article class="panel-card"><div class="panel-head"><h2>Gestión de cuenta</h2><span class="counter-pill">Control</span></div><div class="settings-list"><button class="soft-button full" type="button" data-go-login>Cambiar perfil activo</button><button class="soft-button full" type="button" data-open-legal-gate>Revisar términos y condiciones</button><button class="danger-button full" type="button" data-delete-account>Bajar cuenta</button></div></article>
+            <article class="panel-card compact-permissions-card"><div class="panel-head"><h2>Rol y permisos</h2><span class="counter-pill">Resumen</span></div><div class="settings-list compact-permissions-list" data-privacy-list></div></article>
           </div>
         </section>
       </main>
@@ -238,12 +241,13 @@
   <div class="consent-overlay" data-consent-overlay hidden>
     <section class="consent-card" role="dialog" aria-modal="true" aria-labelledby="consent-title">
       <div class="consent-brand"><img src="assets/img/logo.svg" alt="KORA"></div>
-      <h2 id="consent-title">Vamos con las autorizaciones</h2>
+      <h2 id="consent-title">Términos y condiciones</h2>
+      <p class="consent-role-lead" data-consent-role-lead>Estas autorizaciones se ajustan al rol activo.</p>
       <div class="consent-visual" aria-hidden="true"><span>♪</span><span>✓</span><span>↗</span></div>
       <form class="consent-form" data-consent-form>
-        <label class="check-row"><input type="checkbox" name="terms"><span data-legal-copy="terms">Conozco y acepto el Reglamento y Condiciones de Uso de KORA.</span></label>
-        <label class="check-row"><input type="checkbox" name="privacy"><span data-legal-copy="privacy">Acepto la autorización de tratamiento de datos personales según mi rol.</span></label>
-        <label class="check-row"><input type="checkbox" name="roleData"><span data-legal-copy="roleData">Autorizo el uso de datos específico de mi categoría dentro de KORA.</span></label>
+        <label class="check-row"><input type="checkbox" name="terms"><span data-legal-copy="terms">He leído y acepto los <a href="legal.html?doc=terms" target="_blank" rel="noopener">Términos y Condiciones</a> de KORA.</span></label>
+        <label class="check-row"><input type="checkbox" name="privacy"><span data-legal-copy="privacy">Acepto la <a href="legal.html?doc=privacy" target="_blank" rel="noopener">Autorización de Tratamiento de Datos Personales</a> según mi rol.</span></label>
+        <label class="check-row"><input type="checkbox" name="roleData"><span data-legal-copy="roleData">Acepto los permisos y datos asociados a mi categoría dentro de KORA. <a href="legal.html?doc=terms" target="_blank" rel="noopener">Ver más información</a>.</span></label>
         <button class="consent-submit" type="submit" disabled>Aceptar</button>
       </form>
     </section>
