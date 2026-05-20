@@ -2062,8 +2062,8 @@
       gap: 0.9rem;
       overflow-x: auto;
       overscroll-behavior-x: contain;
-      scroll-snap-type: x mandatory;
-      scroll-behavior: smooth;
+      scroll-snap-type: none;
+      scroll-behavior: auto;
       padding: 0.2rem 0.15rem 0.7rem;
       scrollbar-width: thin;
       scrollbar-color: color-mix(in srgb, var(--accent-2) 44%, transparent) transparent;
@@ -2084,7 +2084,6 @@
 
     .capsule-carousel .capsule-card {
       flex: 0 0 clamp(200px, 18.2vw, 230px);
-      scroll-snap-align: start;
     }
 
     .carousel-button {

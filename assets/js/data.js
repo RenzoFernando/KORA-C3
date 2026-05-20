@@ -385,7 +385,7 @@ window.KORA_DATA = {
     { id: 'notif-comment-repost', title: 'Comentaron un hallazgo de tu comunidad', body: 'Un aporte agregó contexto de barrio a una cápsula compartida.', type: 'comment', artistId: 'santa-loma', postId: 'post-3' },
     { id: 'notif-friend-save', title: 'Hay una cápsula guardada que podría gustarte', body: 'Fue añadida a un tablero de rap, barrio y ladera.', type: 'save', artistId: 'maelo-solar' },
     { id: 'notif-curator-context', title: 'Una canción fue destacada por su contexto cultural', body: 'La recomendación aparece como señal curatorial en el feed.', type: 'curator', artistId: 'valentina-cruz', postId: 'post-1' },
-    { id: 'notif-playlist-grow', title: 'Tu playlist local creció', body: 'La comunidad sumó nuevos aportes esta semana.', type: 'playlist' },
+    { id: 'notif-playlist-grow', title: 'La playlist local creció', body: 'La comunidad sumó nuevos aportes esta semana.', type: 'playlist' },
     { id: 'notif-data-ready', title: 'Autorizaciones al día', body: 'Tu configuración de datos está activa por rol.', type: 'system' }
   ],
   friends: [

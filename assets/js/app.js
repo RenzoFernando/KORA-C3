@@ -266,6 +266,7 @@ function addCommunityEvent(type, artist, options = {}) {
     id: `event-${Date.now()}-${String(Math.random()).slice(2, 7)}`,
     type,
     actor: profile.name,
+    actorId: profile.id,
     role: role.label,
     roleAction: role.action,
     artistId: safeArtist.id,
@@ -295,8 +296,14 @@ function communityNotificationItems() {
 }
 
 function communityActivityCards(limit = 6) {
-  const events = (state.communityEvents || []).slice(0, limit);
-  if (!events.length) return DATA.friendActivity.map(item => `<article class="mini-card"><strong>${escapeHtml(item.name)} ${escapeHtml(item.action)}</strong><span>${escapeHtml(item.detail)}</span></article>`).join('');
+  const events = (state.communityEvents || []).filter(item => !notificationBelongsToActiveProfile(item)).slice(0, limit);
+  if (!events.length) {
+    const active = activeProfileNameParts();
+    return DATA.friendActivity.filter(item => {
+      const name = String(item.name || '').trim().toLowerCase();
+      return name !== active.firstName && name !== active.fullName;
+    }).map(item => `<article class="mini-card"><strong>${escapeHtml(item.name)} ${escapeHtml(item.action)}</strong><span>${escapeHtml(item.detail)}</span></article>`).join('');
+  }
   return events.map(item => `<article class="mini-card community-mini"><div><strong>${escapeHtml(item.title)}</strong><span>${escapeHtml(item.body)}</span></div><small>${escapeHtml(communityTypeLabel(item.type))} · ${escapeHtml(formatCommunityTime(item.at))}</small></article>`).join('');
 }
 
@@ -391,14 +398,12 @@ function renderHero() {
 
 function renderCapsules() {
   const artists = runtimeArtists();
-  const looped = [...artists, ...artists, ...artists];
   const track = qs('[data-capsule-grid]');
-  track.innerHTML = looped.map((artist, index) => {
-    const realIndex = index % artists.length;
+  track.innerHTML = artists.map((artist, index) => {
     const saved = state.saved.includes(artist.id);
-    const active = realIndex === state.currentArtist;
+    const active = index === state.currentArtist;
     return `
-      <article class="capsule-card tone-${escapeHtml(artist.tone || 'sunset')} ${active ? 'is-active' : ''}" data-loop-card="${realIndex}">
+      <article class="capsule-card tone-${escapeHtml(artist.tone || 'sunset')} ${active ? 'is-active' : ''}" data-loop-card="${index}">
         <div class="capsule-cover tone-surface">${imgMarkup(artist.cover, artist.track, artist.symbol)}</div>
         <div>
           <p class="eyebrow">${escapeHtml(artist.scene)}</p>
@@ -407,26 +412,13 @@ function renderCapsules() {
         </div>
         <div class="tag-row"><span class="tag">${escapeHtml(artist.neighborhood)}</span><span class="tag">${artist.match}% match</span><span class="tag">${escapeHtml(artist.language)}</span></div>
         <div class="action-row">
-          <button class="soft-button" type="button" data-select-artist="${realIndex}">Ver</button>
+          <button class="soft-button" type="button" data-select-artist="${index}">Ver</button>
           <button class="soft-button ${saved ? 'is-active' : ''}" type="button" data-save-artist="${escapeHtml(artist.id)}">${saved ? 'Guardado' : 'Guardar'}</button>
         </div>
       </article>
     `;
   }).join('');
-  track.dataset.loopReady = '';
-  if (!track.dataset.loopBound) {
-    track.dataset.loopBound = 'true';
-    let ticking = false;
-    track.addEventListener('scroll', () => {
-      if (ticking) return;
-      ticking = true;
-      requestAnimationFrame(() => {
-        prepareCapsuleLoop();
-        ticking = false;
-      });
-    }, { passive: true });
-  }
-  requestAnimationFrame(() => prepareCapsuleLoop(true));
+  requestAnimationFrame(() => scrollActiveCapsuleIntoView(false));
 }
 
 function renderSaved() {
@@ -1367,25 +1359,31 @@ function toggleSetting(index) {
   toast(state.settingsState[key] ? 'Ajuste activado.' : 'Ajuste desactivado.');
 }
 
-function notificationActorBelongsToActiveProfile(title) {
+function activeProfileNameParts() {
   const profile = activeProfile();
-  const firstName = String(profile.name || '').split(' ')[0];
-  return firstName && String(title || '').toLowerCase().includes(firstName.toLowerCase());
+  const fullName = String(profile.name || '').trim().toLowerCase();
+  const firstName = fullName.split(/\s+/)[0] || '';
+  return { id: profile.id, fullName, firstName };
+}
+
+function notificationBelongsToActiveProfile(item) {
+  const active = activeProfileNameParts();
+  const actor = String(item.actor || '').trim().toLowerCase();
+  const title = String(item.title || '').trim().toLowerCase();
+  if (item.actorId && item.actorId === active.id) return true;
+  if (actor && (actor === active.fullName || actor === active.firstName)) return true;
+  if (active.fullName && title.includes(active.fullName)) return true;
+  if (active.firstName && title.startsWith(`${active.firstName} `)) return true;
+  return false;
 }
 
 function personalizeBaseNotification(item) {
-  const next = { ...item, source: 'system' };
-  if (!notificationActorBelongsToActiveProfile(next.title)) return next;
-  if (next.type === 'comment') return { ...next, title: 'Comentaron un hallazgo de tu comunidad', body: 'Un aporte agregó contexto de barrio a una cápsula compartida.' };
-  if (next.type === 'save') return { ...next, title: 'Hay una cápsula guardada que podría gustarte', body: 'Fue añadida a un tablero de rap, barrio y ladera.' };
-  if (next.type === 'curator') return { ...next, title: 'Una canción fue destacada por su contexto cultural', body: 'La recomendación aparece como señal curatorial en el feed.' };
-  return { ...next, title: 'Tienes una actualización en KORA' };
+  return { ...item, source: 'system' };
 }
 
 function unreadNotifications() {
-  const activeName = activeProfile().name;
   const base = DATA.notifications.map(personalizeBaseNotification);
-  return [...memoryReminderItems(), ...communityNotificationItems().filter(item => item.actor !== activeName), ...base].filter(item => !state.dismissedNotifications.includes(item.id || item.title));
+  return [...communityNotificationItems().filter(item => !notificationBelongsToActiveProfile(item)), ...base.filter(item => !notificationBelongsToActiveProfile(item))].filter(item => !state.dismissedNotifications.includes(item.id || item.title));
 }
 
 function renderNotificationBadge() {
@@ -1699,34 +1697,19 @@ function resetEverything() {
 }
 
 
-function carouselUnit() {
-  const track = qs('[data-capsule-grid]');
-  if (!track) return 0;
-  return track.scrollWidth / 3;
-}
-
-function prepareCapsuleLoop(force = false) {
+function scrollActiveCapsuleIntoView(smooth = true) {
   const track = qs('[data-capsule-grid]');
   if (!track) return;
-  const unit = carouselUnit();
-  if (!unit) return;
-  if (force && !track.dataset.loopReady) {
-    track.scrollLeft = unit;
-    track.dataset.loopReady = 'true';
-    return;
-  }
-  if (track.scrollLeft < unit * 0.45) track.scrollLeft += unit;
-  if (track.scrollLeft > unit * 1.55) track.scrollLeft -= unit;
+  const active = qs('.capsule-card.is-active', track);
+  if (!active) return;
+  const left = active.offsetLeft - Math.max(0, (track.clientWidth - active.clientWidth) / 2);
+  track.scrollTo({ left: Math.max(0, left), behavior: smooth ? 'smooth' : 'auto' });
 }
 
 function scrollCapsules(direction) {
-  const track = qs('[data-capsule-grid]');
-  if (!track) return;
-  prepareCapsuleLoop();
-  const firstCard = qs('.capsule-card', track);
-  const amount = firstCard ? firstCard.getBoundingClientRect().width + 16 : Math.max(240, Math.floor(track.clientWidth * 0.72));
-  track.scrollBy({ left: amount * direction, behavior: 'smooth' });
-  setTimeout(() => prepareCapsuleLoop(), 460);
+  const artists = runtimeArtists();
+  if (!artists.length) return;
+  setCurrentArtist(state.currentArtist + direction);
 }
 
 function autoRotateDiscover() {
