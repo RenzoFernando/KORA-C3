@@ -116,6 +116,8 @@ function svgIcon(name) {
     check: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="m9.4 16.6-4-4 1.4-1.4 2.6 2.6 7.8-7.8 1.4 1.4-9.2 9.2Z" fill="currentColor"/></svg>',
     repost: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 7h9.2l-2.1-2.1L15.5 3 21 8.5 15.5 14l-1.4-1.9 2.1-2.1H7v3H5V9a2 2 0 0 1 2-2Zm10 10H7.8l2.1 2.1L8.5 21 3 15.5 8.5 10l1.4 1.9L7.8 14H17v-3h2v4a2 2 0 0 1-2 2Z" fill="currentColor"/></svg>',
     share: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M18 16.1c-1 0-1.9.4-2.5 1.1L8.9 13.4c.1-.4.1-.6.1-.9s0-.5-.1-.9l6.5-3.8A3.4 3.4 0 1 0 14.4 6l-6.5 3.8a3.4 3.4 0 1 0 0 5.4l6.6 3.9A3.4 3.4 0 1 0 18 16.1Z" fill="currentColor"/></svg>',
+    comment: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3c5 0 9 3.4 9 7.5S17 18 12 18a10 10 0 0 1-3-.4L4 20l1.5-4.2A6.8 6.8 0 0 1 3 10.5C3 6.4 7 3 12 3Z" fill="currentColor"/></svg>',
+    expand: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 14h2v3h3v2H5v-5Zm0-9h5v2H7v3H5V5Zm12 12v-3h2v5h-5v-2h3Zm-3-12h5v5h-2V7h-3V5Z" fill="currentColor"/></svg>',
     next: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="m8 5 8 7-8 7V5Zm9 0h2v14h-2V5Z" fill="currentColor"/></svg>',
     prev: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M16 19 8 12l8-7v14ZM5 5h2v14H5V5Z" fill="currentColor"/></svg>',
     shuffle: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M17 3h4v4h-2V6.4l-4.7 4.7-1.4-1.4L17.6 5H17V3ZM3 7h3.6l12 12H21v2h-3.2L5.8 9H3V7Zm11.3 7.2 1.4 1.4L19 12.4V11h2v4h-4v-2h.6l-3.3 3.2ZM3 17h2.8l3.1-3.1 1.4 1.4L6.6 19H3v-2Z" fill="currentColor"/></svg>',
@@ -317,6 +319,73 @@ function communitySignalPanel() {
   return `<article class="panel-card community-overview"><div class="panel-head"><div><p class="eyebrow">Comunidad activa</p><h2>Lo que pasa alrededor de la música</h2></div><span class="counter-pill">${events.length} señales</span></div><div class="community-metrics"><span><b>${saves}</b><small>Guardados</small></span><span><b>${comments}</b><small>Comentarios</small></span><span><b>${reposts}</b><small>Reposts</small></span><span><b>${playlist}</b><small>Playlist</small></span></div><div class="community-signal-grid">${signals.map(item => `<article class="role-feature"><strong>${escapeHtml(item.title)}</strong><span>${escapeHtml(item.body)}</span></article>`).join('')}</div></article>`;
 }
 
+function iconActionMarkup(icon, label, active = false, text = '') {
+  return `<span class="player-action-icon" aria-hidden="true">${svgIcon(icon)}</span><span class="visually-hidden">${escapeHtml(label)}</span>${text ? `<b class="player-action-label ${active ? 'is-active' : ''}">${escapeHtml(text)}</b>` : ''}`;
+}
+
+function statPill(icon, label, value) {
+  return `<span class="social-stat" title="${escapeHtml(label)}">${svgIcon(icon)}<b>${escapeHtml(String(value))}</b></span>`;
+}
+
+function playerProgressMarkup(artist, total) {
+  const current = Math.min(state.playback, total);
+  const percent = Math.min(100, Math.max(0, total ? Math.round((current / total) * 100) : 0));
+  return `<div class="fullscreen-progress-track"><i style="width:${percent}%"></i></div><div class="fullscreen-time-row"><span>${formatTime(current)}</span><span>${formatTime(total)}</span></div>`;
+}
+
+function playerFullscreenContent() {
+  const artist = activeArtist();
+  const total = state.previewMode === 'short' ? artist.preview : artist.duration;
+  const liked = state.liked.includes(artist.id);
+  const saved = state.saved.includes(artist.id);
+  const reposted = state.reposted.includes(artist.id);
+  const percent = Math.min(100, Math.max(0, total ? Math.round((Math.min(state.playback, total) / total) * 100) : 0));
+  return `
+    <div class="player-fullscreen-shell tone-${escapeHtml(artist.tone || 'sunset')}">
+      <div class="player-fullscreen-backdrop">${imgMarkup(artist.cover, artist.track, artist.symbol)}</div>
+      <div class="player-fullscreen-header">
+        <button class="top-icon" type="button" data-close-modal aria-label="Cerrar">${svgIcon('prev')}</button>
+        <div class="player-fullscreen-title"><p class="eyebrow">Now playing</p><strong>${state.previewMode === 'short' ? 'Cápsula local' : 'Modo extendido'}</strong></div>
+        <button class="top-icon" type="button" data-toggle-preview-mode aria-label="Cambiar modo">${svgIcon('expand')}</button>
+      </div>
+      <div class="player-fullscreen-body">
+        <div class="player-fullscreen-cover">${imgMarkup(artist.cover, artist.track, artist.symbol)}</div>
+        <div class="player-fullscreen-meta">
+          <div>
+            <h2>${escapeHtml(artist.track)}</h2>
+            <p>${escapeHtml(artist.name)} · ${escapeHtml(artist.genre)}</p>
+          </div>
+          <div class="player-fullscreen-side-actions">
+            <button class="player-icon-button ${liked ? 'is-active' : ''}" type="button" data-like-current title="${liked ? 'Quitar me gusta' : 'Me gusta'}">${svgIcon(liked ? 'heartFilled' : 'heart')}</button>
+            <button class="player-icon-button ${saved ? 'is-active' : ''}" type="button" data-save-current title="${saved ? 'Quitar guardado' : 'Guardar'}">${svgIcon(saved ? 'check' : 'plus')}</button>
+            <button class="player-icon-button ${reposted ? 'is-active' : ''}" type="button" data-repost-current title="${reposted ? 'Quitar repost' : 'Repostear'}">${svgIcon('repost')}</button>
+            <button class="player-icon-button" type="button" data-share-menu title="Compartir">${svgIcon('share')}</button>
+          </div>
+        </div>
+        <div class="player-fullscreen-progress">
+          <div class="fullscreen-progress-track"><i style="width:${percent}%"></i></div>
+          <div class="fullscreen-time-row"><span>${formatTime(Math.min(state.playback, total))}</span><span>${formatTime(total)}</span></div>
+        </div>
+        <div class="player-fullscreen-controls">
+          <button class="player-circle-button" type="button" data-prev-artist aria-label="Anterior">${svgIcon('prev')}</button>
+          <button class="player-main-button" type="button" data-toggle-play aria-label="${state.isPlaying ? 'Pausar' : 'Reproducir'}">${svgIcon(state.isPlaying ? 'pause' : 'play')}</button>
+          <button class="player-circle-button" type="button" data-next-artist aria-label="Siguiente">${svgIcon('next')}</button>
+        </div>
+        <div class="player-fullscreen-subcontrols">
+          <button class="soft-button compact-button ${state.shuffle ? 'is-active' : ''}" type="button" data-toggle-shuffle>${svgIcon('shuffle')}<span>Mix</span></button>
+          <button class="soft-button compact-button ${state.repeat ? 'is-active' : ''}" type="button" data-toggle-repeat>${svgIcon('repeat')}<span>Loop</span></button>
+          <button class="soft-button compact-button" type="button" data-follow-listen>Completa</button>
+          <button class="soft-button compact-button" type="button" data-discard-artist>Pasar</button>
+        </div>
+        <div class="player-fullscreen-story">
+          <p>${escapeHtml(artist.story)}</p>
+          <div class="tag-row"><span class="tag">${artist.match}% match</span><span class="tag">${escapeHtml(artist.scene)}</span><span class="tag">${escapeHtml(artist.neighborhood)}</span></div>
+        </div>
+      </div>
+    </div>
+  `;
+}
+
 function roleFeatureCards(features) {
   return (features || []).map(item => `<article class="role-feature"><strong>${escapeHtml(item[0])}</strong><span>${escapeHtml(item[1])}</span></article>`).join('');
 }
@@ -364,7 +433,7 @@ function renderProfileChrome() {
   });
   qs('[data-account-state]').textContent = state.accountHidden ? 'Perfil oculto' : role.accountState;
   qs('[data-account-meta]').textContent = role.accountMeta;
-  qsa('[data-theme-toggle]').forEach(button => button.textContent = state.theme === 'dark' ? 'Modo claro' : 'Modo oscuro');
+  qsa('[data-theme-toggle]').forEach(button => button.textContent = state.theme === 'dark' ? 'Claro' : 'Oscuro');
 }
 
 function renderSidebarSession() {
@@ -456,13 +525,23 @@ function renderPlayer() {
   const reposted = state.reposted.includes(artist.id);
   qs('[data-player-panel]').className = `player-panel tone-${artist.tone || 'sunset'}`;
   qs('[data-player-panel]').innerHTML = `
-    <div class="cover-art tone-surface">${imgMarkup(artist.cover, artist.track, artist.symbol)}</div>
+    <div class="cover-art tone-surface player-cover-shell">${imgMarkup(artist.cover, artist.track, artist.symbol)}<button class="player-cover-expand" type="button" data-open-player-fullscreen aria-label="Expandir reproductor">${svgIcon('expand')}</button></div>
     <div class="player-copy">
       <p class="eyebrow">Cápsula activa · ${state.previewMode === 'short' ? '30 segundos' : 'modo extendido'}</p>
-      <h1>${escapeHtml(artist.track)}</h1>
-      <p><strong>${escapeHtml(artist.name)}</strong> · ${escapeHtml(artist.genre)} · ${escapeHtml(artist.neighborhood)}</p>
+      <div class="player-heading-row">
+        <div>
+          <h1>${escapeHtml(artist.track)}</h1>
+          <p><strong>${escapeHtml(artist.name)}</strong> · ${escapeHtml(artist.genre)} · ${escapeHtml(artist.neighborhood)}</p>
+        </div>
+        <button class="soft-button compact-button" type="button" data-open-player-fullscreen>${svgIcon('expand')}<span>Expandir</span></button>
+      </div>
       <p>${escapeHtml(artist.story)}</p>
       <div class="tag-row"><span class="tag">${artist.match}% match cultural</span><span class="tag">${escapeHtml(artist.scene)}</span><span class="tag">${escapeHtml(artist.language)}</span></div>
+      <div class="player-meta-strip">
+        ${statPill('heart', 'Me gusta', state.liked.length)}
+        ${statPill('plus', 'Guardados', state.saved.length)}
+        ${statPill('repost', 'Reposts', state.reposted.length)}
+      </div>
     </div>
   `;
   qs('[data-player-range]').max = total;
@@ -474,20 +553,30 @@ function renderPlayer() {
     playButton.innerHTML = `${svgIcon(state.isPlaying ? 'pause' : 'play')}<span class="visually-hidden">${state.isPlaying ? 'Pausar' : 'Reproducir'}</span>`;
     playButton.setAttribute('aria-label', state.isPlaying ? 'Pausar' : 'Reproducir');
   }
-  qs('[data-toggle-preview-mode]').textContent = state.previewMode === 'short' ? 'Escuchar completa' : 'Volver a cápsula 30s';
+  const previewButton = qs('[data-toggle-preview-mode]');
+  if (previewButton) previewButton.innerHTML = `${svgIcon('expand')}<span>${state.previewMode === 'short' ? 'Full' : '30s'}</span>`;
   qsa('[data-like-current]').forEach(button => {
     button.classList.toggle('is-active', liked);
-    button.innerHTML = `<span>${svgIcon(liked ? 'heartFilled' : 'heart')}</span><b>${liked ? 'Te gusta' : 'Me gusta'}</b>`;
+    button.innerHTML = iconActionMarkup(liked ? 'heartFilled' : 'heart', liked ? 'Quitar me gusta' : 'Me gusta');
+    button.setAttribute('title', liked ? 'Quitar me gusta' : 'Me gusta');
   });
   qsa('[data-save-current]').forEach(button => {
     if (button.classList.contains('player-action')) {
       button.classList.toggle('is-active', saved);
-      button.innerHTML = `<span>${svgIcon(saved ? 'check' : 'plus')}</span><b>${saved ? 'Guardado' : 'Guardar'}</b>`;
+      button.innerHTML = iconActionMarkup(saved ? 'check' : 'plus', saved ? 'Quitar guardado' : 'Guardar');
+      button.setAttribute('title', saved ? 'Quitar guardado' : 'Guardar');
     }
   });
   qsa('[data-repost-current]').forEach(button => {
     button.classList.toggle('is-active', reposted);
-    button.innerHTML = `<span>${svgIcon('repost')}</span><b>${reposted ? 'Reposteado' : 'Repostear'}</b>`;
+    button.innerHTML = iconActionMarkup('repost', reposted ? 'Quitar repost' : 'Repostear');
+    button.setAttribute('title', reposted ? 'Quitar repost' : 'Repostear');
+  });
+  qsa('[data-share-menu]').forEach(button => {
+    if (button.classList.contains('player-action')) {
+      button.innerHTML = iconActionMarkup('share', 'Compartir');
+      button.setAttribute('title', 'Compartir');
+    }
   });
   qs('[data-audio-state]').textContent = state.audioMessage || 'Audio listo para reproducir.';
   qs('[data-player-insights]').innerHTML = artist.insight.map(item => `<article class="insight-card"><strong>${escapeHtml(item)}</strong><span>Señal para decidir sin perder el contexto local.</span></article>`).join('');
@@ -525,6 +614,15 @@ function toggleLikeCurrent() {
   saveState();
   renderAll();
   toast(state.liked.includes(artist.id) ? 'Marcado como me gusta.' : 'Me gusta retirado.');
+}
+
+function toggleLikeArtist(id) {
+  const artist = artistById(id);
+  if (!artist) return;
+  const isLiked = state.liked.includes(id);
+  state.liked = isLiked ? state.liked.filter(item => item !== id) : [...state.liked, id];
+  saveState();
+  renderAll();
 }
 
 function saveArtist(id) {
@@ -747,30 +845,57 @@ function renderInteraction() {
     const artist = artistById(post.artistId) || DATA.artists[0];
     const postComments = state.comments[post.id] || [];
     const count = (state.interactions[post.id] || 0) + postComments.length;
+    const liked = state.liked.includes(artist.id);
     const saved = state.saved.includes(artist.id);
     const reposted = state.reposted.includes(artist.id);
+    const shared = state.shared.includes(artist.id);
     const communityForArtist = (state.communityEvents || []).filter(item => item.artistId === artist.id).length;
-    const commentPreview = postComments.slice(-3).map(comment => `<article class="comment-chip"><div><strong>${escapeHtml(comment.author)}</strong><small>${escapeHtml(comment.role || 'Comunidad')} · ${escapeHtml(comment.at || 'Ahora')}</small></div><span>${escapeHtml(comment.text)}</span></article>`).join('');
+    const socialCount = count + communityForArtist + (liked ? 1 : 0);
+    const commentPreview = postComments.slice(-2).map(comment => `<article class="comment-chip"><div class="comment-chip-avatar">${escapeHtml((comment.author || 'K').slice(0, 1).toUpperCase())}</div><div><strong>${escapeHtml(comment.author)}</strong><small>${escapeHtml(comment.role || 'Comunidad')} · ${escapeHtml(comment.at || 'Ahora')}</small><span>${escapeHtml(comment.text)}</span></div></article>`).join('');
     return `
-      <article class="feed-card tone-${escapeHtml(artist.tone || 'sunset')}">
+      <article class="feed-card social-feed-card tone-${escapeHtml(artist.tone || 'sunset')}">
         <div class="feed-top">
           <div class="feed-author">
-            <span class="list-cover tone-surface">${imgMarkup(artist.avatar || artist.cover, artist.name, artist.symbol)}</span>
+            <span class="list-cover tone-surface social-avatar">${imgMarkup(artist.avatar || artist.cover, artist.name, artist.symbol)}</span>
             <div class="feed-author-text"><strong>${escapeHtml(artist.name)}</strong><span>${escapeHtml(post.type)} · ${escapeHtml(artist.neighborhood)}</span></div>
           </div>
-          <span class="counter-pill">${count + communityForArtist} señales</span>
+          <button class="soft-button compact-button" type="button" data-open-player-fullscreen>${svgIcon('expand')}<span>Open</span></button>
         </div>
-        <div class="feed-body"><h2>${escapeHtml(post.title)}</h2><p>${escapeHtml(post.body)}</p></div>
+        <div class="feed-media">${imgMarkup(artist.cover, artist.track, artist.symbol)}</div>
+        <div class="feed-body">
+          <div class="feed-body-head">
+            <div>
+              <h2>${escapeHtml(post.title)}</h2>
+              <p>${escapeHtml(post.body)}</p>
+            </div>
+            <span class="counter-pill">${socialCount} señales</span>
+          </div>
+          <div class="feed-track-glance">
+            <strong>${escapeHtml(artist.track)}</strong>
+            <span>${escapeHtml(artist.genre)} · ${escapeHtml(artist.scene)}</span>
+          </div>
+        </div>
         <div class="community-tags"><span>${escapeHtml(post.type)}</span><span>${postComments.length} comentarios</span><span>${communityForArtist} movimientos</span><span>${escapeHtml(artist.scene)}</span></div>
+        <div class="social-stats-row">
+          ${statPill('heart', 'Me gusta', liked ? 1 : 0)}
+          ${statPill('comment', 'Comentarios', postComments.length)}
+          ${statPill('repost', 'Reposts', communityForArtist)}
+        </div>
         ${commentPreview ? `<div class="comment-list">${commentPreview}</div>` : `<div class="comment-list muted-comment">Aún no hay comentarios visibles. Sé el primero en aportar contexto, criterio o memoria local.</div>`}
-        <div class="action-row"><button class="primary-button" type="button" data-interact-post="${escapeHtml(post.id)}">${escapeHtml(post.cta)}</button><button class="soft-button ${saved ? 'is-saved' : ''}" type="button" data-save-artist="${escapeHtml(artist.id)}">${saved ? 'Guardado' : escapeHtml(role.saveLabel)}</button><button class="soft-button ${reposted ? 'is-active' : ''}" type="button" data-repost-artist="${escapeHtml(artist.id)}">${reposted ? 'Reposteado' : 'Repostear'}</button><button class="soft-button" type="button" data-share-artist="${escapeHtml(artist.id)}">Compartir cápsula</button></div>
+        <div class="social-actions-bar">
+          <button class="social-action ${liked ? 'is-active' : ''}" type="button" data-like-artist="${escapeHtml(artist.id)}" title="${liked ? 'Quitar me gusta' : 'Me gusta'}">${svgIcon(liked ? 'heartFilled' : 'heart')}<span>${liked ? '1' : '0'}</span></button>
+          <button class="social-action primary" type="button" data-interact-post="${escapeHtml(post.id)}" title="${escapeHtml(post.cta)}">${svgIcon('comment')}<span>${postComments.length}</span></button>
+          <button class="social-action ${saved ? 'is-active' : ''}" type="button" data-save-artist="${escapeHtml(artist.id)}" title="${saved ? 'Quitar guardado' : 'Guardar'}">${svgIcon(saved ? 'check' : 'plus')}<span>${saved ? '1' : '0'}</span></button>
+          <button class="social-action ${reposted ? 'is-active' : ''}" type="button" data-repost-artist="${escapeHtml(artist.id)}" title="${reposted ? 'Quitar repost' : 'Repostear'}">${svgIcon('repost')}<span>${reposted ? '1' : '0'}</span></button>
+          <button class="social-action ${shared ? 'is-active' : ''}" type="button" data-share-artist="${escapeHtml(artist.id)}" title="Compartir cápsula">${svgIcon('share')}<span>${shared ? '1' : '0'}</span></button>
+        </div>
       </article>
     `;
   }).join('');
   qs('[data-artist-feed]').innerHTML = `${communitySignalPanel()}${feedHtml}`;
   const playlist = state.playlist.map(artistById).filter(Boolean);
   qs('[data-playlist-list]').innerHTML = playlist.length ? playlist.map(artist => `
-    <article class="list-item"><span class="list-cover tone-${escapeHtml(artist.tone || 'sunset')}">${imgMarkup(artist.cover, artist.track, artist.symbol)}</span><div class="list-item-content"><strong>${escapeHtml(artist.track)}</strong><span>${escapeHtml(artist.name)} · añadido por la comunidad</span></div><button class="soft-button" type="button" data-repost-artist="${escapeHtml(artist.id)}">Repost</button></article>
+    <article class="list-item social-list-item"><span class="list-cover tone-${escapeHtml(artist.tone || 'sunset')}">${imgMarkup(artist.cover, artist.track, artist.symbol)}</span><div class="list-item-content"><strong>${escapeHtml(artist.track)}</strong><span>${escapeHtml(artist.name)} · añadido por la comunidad</span></div><button class="social-action ${state.reposted.includes(artist.id) ? 'is-active' : ''}" type="button" data-repost-artist="${escapeHtml(artist.id)}" title="Repost">${svgIcon('repost')}<span>Repost</span></button></article>
   `).join('') : '<div class="empty-state">La playlist local todavía no tiene aportes.</div>';
   qs('[data-impact-box]').innerHTML = `<strong>${playlist.length} ${escapeHtml(role.impactTitle)}</strong><p>${escapeHtml(role.impactBody)}</p><div class="community-trail">${communityActivityCards(3)}</div>`;
   const friendsNode = qs('[data-friend-activity]');
@@ -1303,9 +1428,13 @@ function renderNowPlaying() {
   const percent = Math.min(100, Math.max(0, total ? Math.round((state.playback / total) * 100) : 0));
   bar.innerHTML = `
     <div class="mini-now-media"><span class="list-cover tone-${escapeHtml(artist.tone || 'sunset')}">${imgMarkup(artist.cover, artist.track, artist.symbol)}</span><div><strong>${escapeHtml(artist.track)}</strong><span>${escapeHtml(artist.name)} · ${formatTime(state.playback)} / ${formatTime(total)}${state.isPlaying ? '' : ' · pausado'}</span><div class="mini-now-progress"><i style="width:${percent}%"></i></div></div></div>
-    <div class="mini-now-controls"><button class="icon-button" type="button" data-prev-artist aria-label="Anterior">${svgIcon('prev')}</button><button class="primary-button play-toggle mini-play" type="button" data-toggle-play aria-label="${playLabel}">${svgIcon(playIcon)}<span class="visually-hidden">${playLabel}</span></button><button class="icon-button" type="button" data-next-artist aria-label="Siguiente">${svgIcon('next')}</button><button class="soft-button ${state.shuffle ? 'is-active' : ''}" type="button" data-toggle-shuffle>${svgIcon('shuffle')}<span>Aleatorio</span></button><button class="soft-button ${state.repeat ? 'is-active' : ''}" type="button" data-toggle-repeat>${svgIcon('repeat')}<span>Repetir</span></button></div>
-    <div class="mini-now-actions"><button class="soft-button" type="button" data-repost-current>${svgIcon('repost')}<span>Repost</span></button><button class="soft-button" type="button" data-open-friends>${svgIcon('friends')}<span>Amigos</span></button><button class="soft-button" type="button" data-share-menu>${svgIcon('share')}<span>Compartir</span></button></div>
+    <div class="mini-now-controls"><button class="icon-button" type="button" data-prev-artist aria-label="Anterior">${svgIcon('prev')}</button><button class="primary-button play-toggle mini-play" type="button" data-toggle-play aria-label="${playLabel}">${svgIcon(playIcon)}<span class="visually-hidden">${playLabel}</span></button><button class="icon-button" type="button" data-next-artist aria-label="Siguiente">${svgIcon('next')}</button><button class="icon-button ${state.shuffle ? 'is-active' : ''}" type="button" data-toggle-shuffle aria-label="Aleatorio">${svgIcon('shuffle')}</button><button class="icon-button ${state.repeat ? 'is-active' : ''}" type="button" data-toggle-repeat aria-label="Repetir">${svgIcon('repeat')}</button></div>
+    <div class="mini-now-actions"><button class="icon-button" type="button" data-open-player-fullscreen aria-label="Expandir">${svgIcon('expand')}</button><button class="icon-button" type="button" data-repost-current aria-label="Repost">${svgIcon('repost')}</button><button class="icon-button" type="button" data-share-menu aria-label="Compartir">${svgIcon('share')}</button></div>
   `;
+}
+
+function showPlayerFullscreen() {
+  showModal(playerFullscreenContent(), 'player-fullscreen-card');
 }
 
 function showAiAssistant() {
@@ -1402,8 +1531,34 @@ function renderNotificationBadge() {
 
 function showNotificationsPanel() {
   const unread = unreadNotifications();
-  const content = unread.length ? unread.map(item => `<article class="notification-card ${item.community ? 'is-community' : ''}"><div><span class="status-chip">${escapeHtml(communityTypeLabel(item.type || item.source || 'system'))}</span><strong>${escapeHtml(item.title)}</strong><p>${escapeHtml(item.body)}</p></div><div class="notification-actions">${item.artistId ? `<button class="primary-button" type="button" data-open-notification-artist="${escapeHtml(item.artistId)}">Abrir cápsula</button>` : ''}${item.postId ? `<button class="soft-button" type="button" data-open-notification-post="${escapeHtml(item.postId)}">Ver feed</button>` : ''}<button class="soft-button" type="button" data-dismiss-notification="${escapeHtml(item.id || item.title)}">Cerrar aviso</button></div></article>`).join('') : '<div class="empty-state">No tienes notificaciones pendientes.</div>';
-  showModal(`<div class="notification-modal-head"><div><h2>Notificaciones</h2><p>Actualizaciones de comunidad, comentarios, reposts, guardados y recordatorios de hallazgos.</p></div><button class="soft-button" type="button" data-close-modal>Cerrar</button></div><div class="settings-list notification-modal-list">${content}</div>`, 'notifications-modal-card');
+  const content = unread.length ? unread.map(item => `
+    <article class="notification-card ${item.community ? 'is-community' : ''}">
+      <div class="notification-card-main">
+        <div class="notification-card-icon ${item.community ? 'is-community' : ''}">${svgIcon(item.artistId ? 'play' : item.postId ? 'comment' : 'friends')}</div>
+        <div class="notification-card-copy">
+          <div class="notification-card-topline">
+            <span class="status-chip">${escapeHtml(communityTypeLabel(item.type || item.source || 'system'))}</span>
+          </div>
+          <strong>${escapeHtml(item.title)}</strong>
+          <p>${escapeHtml(item.body)}</p>
+        </div>
+      </div>
+      <div class="notification-actions">
+        ${item.artistId ? `<button class="icon-button is-accent" type="button" data-open-notification-artist="${escapeHtml(item.artistId)}" aria-label="Abrir cápsula" title="Abrir cápsula">${svgIcon('play')}</button>` : ''}
+        ${item.postId ? `<button class="icon-button" type="button" data-open-notification-post="${escapeHtml(item.postId)}" aria-label="Ver publicación" title="Ver publicación">${svgIcon('comment')}</button>` : ''}
+        <button class="icon-button" type="button" data-dismiss-notification="${escapeHtml(item.id || item.title)}" aria-label="Descartar notificación" title="Descartar">${svgIcon('check')}</button>
+      </div>
+    </article>`).join('') : '<div class="empty-state">No tienes notificaciones pendientes.</div>';
+  showModal(`
+    <div class="notification-modal-head">
+      <div>
+        <h2>Notificaciones</h2>
+        <p>${unread.length ? `${unread.length} nuevas` : 'Sin pendientes'}</p>
+      </div>
+      <button class="top-icon" type="button" data-close-modal aria-label="Cerrar" title="Cerrar">${svgIcon('plus')}</button>
+    </div>
+    <div class="settings-list notification-modal-list">${content}</div>
+  `, 'notifications-modal-card');
 }
 
 function dismissNotification(id) {
@@ -1435,7 +1590,7 @@ function showCommentComposer(postId) {
   const post = DATA.interactions.find(item => item.id === postId);
   if (!post) return;
   const artist = artistById(post.artistId) || activeArtist();
-  showModal(`<h2>${escapeHtml(post.cta)}</h2><p>${escapeHtml(artist.name)} está esperando una señal de la comunidad sobre ${escapeHtml(post.title.toLowerCase())}.</p><form class="comment-form" data-comment-form data-post-id="${escapeHtml(postId)}"><div class="quick-comment-grid"><button class="soft-button" type="button" data-quick-comment="Me conecta por el barrio y la historia local.">Contexto local</button><button class="soft-button" type="button" data-quick-comment="Voto por la línea con más identidad caleña.">Voto cultural</button><button class="soft-button" type="button" data-quick-comment="Guardaría esta cápsula para compartirla con amigos.">Guardar y compartir</button><button class="soft-button" type="button" data-voice-comment>Grabar aporte de voz</button></div><label>Comentario<textarea name="comment" data-comment-text required placeholder="Escribe tu aporte, voto o comentario para el artista."></textarea></label><button class="primary-button full" type="submit">Publicar aporte</button></form><button class="soft-button full" type="button" data-close-modal>Cancelar</button>`);
+  showModal(`<h2>${escapeHtml(post.cta)}</h2><p>${escapeHtml(artist.name)} está esperando una señal de la comunidad sobre ${escapeHtml(post.title.toLowerCase())}.</p><form class="comment-form social-comment-form" data-comment-form data-post-id="${escapeHtml(postId)}"><div class="quick-comment-grid"><button class="soft-button compact-button" type="button" data-quick-comment="Me conecta por el barrio y la historia local.">${svgIcon('comment')}<span>Contexto</span></button><button class="soft-button compact-button" type="button" data-quick-comment="Voto por la línea con más identidad caleña.">${svgIcon('heart')}<span>Voto</span></button><button class="soft-button compact-button" type="button" data-quick-comment="Guardaría esta cápsula para compartirla con amigos.">${svgIcon('share')}<span>Share</span></button><button class="soft-button compact-button" type="button" data-voice-comment>${svgIcon('friends')}<span>Voz</span></button></div><label>Comentario<textarea name="comment" data-comment-text required placeholder="Escribe tu aporte"></textarea></label><div class="social-comment-actions"><button class="soft-button" type="button" data-close-modal>Cancelar</button><button class="primary-button" type="submit">Publicar</button></div></form>`, 'social-comment-modal');
 }
 
 function submitComment(form) {
@@ -1486,6 +1641,7 @@ function renderAll() {
   renderProfile();
   renderNowPlaying();
   renderNotificationBadge();
+  if (!qs('[data-modal-layer]').hidden && qs('.player-fullscreen-card', qs('[data-modal-layer]'))) showPlayerFullscreen();
 }
 
 function showLegalGate(force = false) {
@@ -1743,6 +1899,7 @@ function handleGlobalClick(event) {
   if (target.dataset.selectArtist !== undefined) setCurrentArtist(Number(target.dataset.selectArtist));
   if (target.dataset.goPlayer !== undefined) setView('player');
   if (target.dataset.likeCurrent !== undefined) toggleLikeCurrent();
+  if (target.dataset.likeArtist) toggleLikeArtist(target.dataset.likeArtist);
   if (target.dataset.saveCurrent !== undefined) saveArtist(activeArtist().id);
   if (target.dataset.saveArtist) saveArtist(target.dataset.saveArtist);
   if (target.dataset.removeSaved) removeSaved(target.dataset.removeSaved);
@@ -1849,6 +2006,7 @@ function handleGlobalClick(event) {
   if (target.dataset.openSettings !== undefined) showSettingsPanel();
   if (target.dataset.openNotifications !== undefined) showNotificationsPanel();
   if (target.dataset.openFriends !== undefined) showFriendsPanel();
+  if (target.dataset.openPlayerFullscreen !== undefined) showPlayerFullscreen();
   if (target.dataset.closeModal !== undefined) closeModal();
 }
 
