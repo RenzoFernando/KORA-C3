@@ -1,0 +1,6 @@
+name,hex,rgb,usage
+KORA Orange,#F1871C,"241,135,28",accent / symbol / highlight
+KORA Black,#000000,"0,0,0",primary wordmark / icon
+KORA White,#FFFFFF,"255,255,255",inverse logo / app icon
+KORA Cream,#FDF8F2,"253,248,242",background
+Soft Divider,#EAE4DD,"234,228,221",separator lines
