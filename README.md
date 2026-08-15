@@ -1,8 +1,8 @@
-# KORA Corte 3
+# KORA 
 
-Aplicación web de la célula A de KORA.
+Aplicación web de KORA desarrollada con HTML, CSS y JavaScript, con interfaz responsive, autenticación y despliegue en GitHub Pages.
 
-## Integrantes célula A
+## Integrantes 
 
 - Johan
 - Karold
